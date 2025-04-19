@@ -1,8 +1,16 @@
 // SERVER BASE URL
-export const SERVER_URL = "http://localhost:8080/demo";
+const SERVER_URL = "http://localhost:8080";
+
+// SERVER USER ACTIONS URL
+const SERVER_USER_ACTIONS_URL = SERVER_URL + "/user";
+
+// SERVER CREDENTIALS ACTIONS URL
+const SERVER_CREDENTIALS_ACTIONS_URL = SERVER_URL + "/credentials";
 
 // SERVER URL TO ADD USER
-export const SERVER_ADD_USER_URL = "http://localhost:8080/demo/add";
+export const SERVER_USER_SIGNUP = SERVER_USER_ACTIONS_URL + "/signup";
 
 // SERVER URL TO CHECK IF A USER WITH HIS ENCRYPTED PASSWORD IS ON THE BD
-export const SERVER_CHECK_USER_URL = "http://localhost:8080/demo/checkPassword";
+export const SERVER_USER_LOGIN = SERVER_USER_ACTIONS_URL + "/login";
+
+export const SERVER_OBTAIN_USER_CREDENTIALS = SERVER_CREDENTIALS_ACTIONS_URL + "/getAll";

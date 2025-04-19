@@ -1,22 +1,19 @@
-import { SERVER_CHECK_USER_URL } from '../config/config.js';
+import { SERVER_USER_LOGIN } from '../config/config.js';
 
 const inputEmail = document.getElementById("inputEmail")
 const inputPassword = document.getElementById("inputPassword")
 const alertBox = document.getElementById("alertBox")
+const alertMessage = document.getElementById("alertMessage");
 
-const xhr = new XMLHttpRequest();
+document.getElementById("btnLogin").addEventListener("click", async (event) => {
+    event.preventDefault();
 
-document.getElementById("btnLogin").addEventListener("click", (event) => {
     let email = inputEmail.value.trim();
     let password = inputPassword.value.trim();
-    let alertMessage = document.getElementById("alertMessage");
+
     let errorMsg = "<span class='font-medium'>Error!</span> ";
 
-    xhr.open("POST", SERVER_CHECK_USER_URL, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
     if (email === "" || password === "") {
-
         if (email === "" && password === "") {
             errorMsg += "Por favor, ingresa tu correo y contraseña.";
         } else if (email === "") {
@@ -26,34 +23,38 @@ document.getElementById("btnLogin").addEventListener("click", (event) => {
         }
 
         alertMessage.innerHTML = errorMsg;
-        alertBox.classList.remove("hidden"); // Muestra la alerta
+        alertBox.classList.remove("hidden");
         return;
     }
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
+    await window.api.generateMasterKey(email, password);
+    const authKey = await window.api.getAuthKey();
 
-            if (this.responseText == "User not found") {
-                errorMsg += "El correo introducido no esta en nuestro sistema";
-            } else if (this.responseText == "Incorrect password") {
-                errorMsg += "La contraseña introducida es incorrecta";
-            } else if (this.responseText == "User found with matching password") {
-                window.api.changeView("/views/index.html");
-            }
-            alertMessage.innerHTML = errorMsg;
-            console.log(this.responseText);
-            alertBox.classList.remove("hidden");
+    try {
+        const response = await fetch(SERVER_USER_LOGIN, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password: authKey }),
+        });
+
+        const result = await response.text(); // o .json() si es JSON
+
+        if (result === "User not found") {
+            errorMsg += "El correo introducido no está en nuestro sistema.";
+        } else if (result === "Incorrect password") {
+            errorMsg += "La contraseña introducida es incorrecta.";
+        } else if (result === "User found with matching password") {
+            window.api.changeView("/views/index.html");
+            return;
         }
-    };
 
-    // Ocultar alerta si ya no hay errores
-
-
-    // Lógica para generar el hash y continuar con el login
-    const hash = window.api.generateHash(email, password);
-
-    var data = JSON.stringify({ "email": email, "password": hash });
-
-    xhr.send(data);
-    alertBox.classList.add("hidden");
+        alertMessage.innerHTML = errorMsg;
+        alertBox.classList.remove("hidden");
+    } catch (error) {
+        console.error("Error al intentar iniciar sesión:", error);
+        alertMessage.innerHTML = "<span class='font-medium'>Error!</span> No se pudo conectar con el servidor.";
+        alertBox.classList.remove("hidden");
+    }
 });

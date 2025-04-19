@@ -1,121 +1,83 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const accordionContainer = document.getElementById("accordion-container");
+import { SERVER_OBTAIN_USER_CREDENTIALS } from '../config/config.js';
 
-    // Datos de los acordeones (puedes cambiar o cargar dinámicamente)
-    const accordionData = [
-        { title: "What is Flowbite?", content: "URL:" },
-        { title: "Why use Tailwind CSS?", content: "Tailwind CSS provides utility classes that help developers build modern and responsive UI quickly." },
-        { title: "Is Flowbite free?", content: "Yes, Flowbite is free and open-source, but it also offers premium components and templates." }
-    ];
+const container = document.getElementById("accordion-container");
+const template = document.querySelector("template");
 
-    // Función para crear un acordeón
-    function createAccordion(id, title, content) {
-        return `
-        <div class="accordion-item p-5">
-            <h2 id="accordion-heading-${id}">
-                <button type="button"
-                    class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-gray-200 rounded-lg focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-                    data-accordion-target="#accordion-body-${id}" aria-expanded="false"
-                    aria-controls="accordion-body-${id}">
-                    <span>${title}</span>
-                    <svg data-accordion-icon class="w-3 h-3 shrink-0 transition-transform transform rotate-0"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5 5 1 1 5" />
-                    </svg>
-                </button>
-            </h2>
-<div id="accordion-body-${id}" class="hidden pt-2" aria-labelledby="accordion-heading-${id}">
-    <div class="p-5 grid grid-cols-4 gap-4 border border-gray-200 dark:border-gray-700 dark:bg-gray-900 rounded-lg">
-        
-        <!-- Nombre de usuario -->
-        <div class="flex items-center text-gray-500 dark:text-gray-400">
-            <div class="flex items-center">
-                <span class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">Usuario</span>
-                <div class="relative w-full">
-                    <input id="website-url" type="text" aria-describedby="helper-text-explanation" class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="https://flowbite.com" readonly disabled />
-                </div>
-                <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url" class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700" type="button">
-                    <span id="default-icon">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                            <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
-                        </svg>
-                    </span>
-                    <span id="success-icon" class="hidden">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                        </svg>
-                    </span>
-                </button>
-                <div id="tooltip-website-url" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                    <span id="default-tooltip-message">Copy link</span>
-                    <span id="success-tooltip-message" class="hidden">Copied!</span>
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Contraseña -->
-        <div class="flex items-center text-gray-500 dark:text-gray-400">
-            <div class="flex items-center">
-                <span class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">Contraseña</span>
-                <div class="relative w-full">
-                    <input id="website-url" type="text" aria-describedby="helper-text-explanation" class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="https://flowbite.com" readonly disabled />
-                </div>
-                <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url" class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700" type="button">
-                    <span id="default-icon">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                            <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
-                        </svg>
-                    </span>
-                    <span id="success-icon" class="hidden">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                        </svg>
-                    </span>
-                </button>
-                <div id="tooltip-website-url" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                    <span id="default-tooltip-message">Copy link</span>
-                    <span id="success-tooltip-message" class="hidden">Copied!</span>
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="flex items-center text-gray-500 dark:text-gray-400">
-            <div class="flex items-center">
-                <span class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">URL</span>
-                <div class="relative w-full">
-                    <input id="website-url" type="text" aria-describedby="helper-text-explanation" class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="https://flowbite.com" readonly disabled />
-                </div>
-                <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url" class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700" type="button">
-                    <span id="default-icon">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                            <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
-                        </svg>
-                    </span>
-                    <span id="success-icon" class="hidden">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                        </svg>
-                    </span>
-                </button>
-                <div id="tooltip-website-url" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                    <span id="default-tooltip-message">Copy link</span>
-                    <span id="success-tooltip-message" class="hidden">Copied!</span>
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-            </div>
-        </div>
-        </div>`;
+const xhr = new XMLHttpRequest();
+let credentialList = [];
+
+async function getCredentials() {
+    const username = "VioletSorrengail@gmail.com";
+    const authKey = await window.parent.api.getAuthKey();
+    const basicAuth = btoa(`${username}:${authKey}`);
+
+    xhr.open("POST", SERVER_OBTAIN_USER_CREDENTIALS, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Basic ${basicAuth}`);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const credential = JSON.parse(this.responseText);
+            credentialList = credential;
+            console.log(credentialList);
+            fillCredentials();
+        }
+    };
+
+    const data = JSON.stringify({ email: username });
+    xhr.send(data);
+}
+
+async function fillCredentials() {
+    if (!Array.isArray(credentialList) || credentialList.length === 0) {
+        console.error("credentialList no es un array válido o está vacío");
+        return;
     }
 
-    // Insertar acordeones en el contenedor
-    accordionData.forEach((item, index) => {
-        accordionContainer.innerHTML += createAccordion(index + 1, item.title, item.content);
-    });
+    let idCounter = 0;
 
-    // Activar funcionalidad del acordeón
+    for (const cred of credentialList) {
+        if (!cred.salt || !cred.encryptedData) {
+            console.error("Salt o encryptedData está vacío para la credencial:", cred);
+            continue;
+        }
+
+        try {
+            const decryptedData = await window.parent.api.decryptCredential(cred.salt, cred.encryptedData);
+
+            if (decryptedData) {
+                const data = JSON.parse(decryptedData);
+                const { entry_name, username, password, url } = data;
+
+                const clone = template.content.cloneNode(true);
+                const id = `accordion-${idCounter++}`;
+
+                clone.querySelector("h2").id = `accordion-heading-${id}`;
+                clone.querySelector("button").setAttribute("data-accordion-target", `#accordion-body-${id}`);
+                clone.querySelector("button").setAttribute("aria-controls", `accordion-body-${id}`);
+                clone.querySelector("button").setAttribute("aria-expanded", "false");
+                clone.querySelector("svg[data-accordion-icon]").classList.remove("rotate-180");
+                clone.querySelector("div[id^='accordion-body']").id = `accordion-body-${id}`;
+                clone.querySelector("div[id^='accordion-body']").setAttribute("aria-labelledby", `accordion-heading-${id}`);
+
+                const inputs = clone.querySelectorAll("input");
+                const span = clone.querySelector('#entry_name');
+                span.textContent = entry_name; 
+                inputs[0].value = username;
+                inputs[1].value = password;
+                inputs[2].value = url;
+
+                container.appendChild(clone);
+
+                console.log("Credencial descifrada:", data); 
+            } else {
+                console.error("Fallo al descifrar la credencial:", cred);
+            }
+        } catch (error) {
+            console.error("Error al descifrar la credencial:", error);
+        }
+    }
+
     document.querySelectorAll("[data-accordion-target]").forEach((button) => {
         button.addEventListener("click", function () {
             const target = document.querySelector(this.getAttribute("data-accordion-target"));
@@ -137,4 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-});
+
+}
+
+getCredentials();

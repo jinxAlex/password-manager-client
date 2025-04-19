@@ -5,19 +5,85 @@ const iterations = 600000;
 const keyLength = 32;
 const digest = "sha256";
 
-function generateHash(email, masterPassword) {
-  ipcRenderer.invoke('store-master-password', email, masterPassword);
-  const masterKey = crypto.pbkdf2Sync(masterPassword, email, iterations, keyLength, digest);
-  const hash = masterKey.toString("hex");
-  return hash;
+async function generateAuthKey(email, masterPassword, masterKey) {
+  return new Promise((resolve, reject) => {
+    const passwordBuffer = Buffer.from(String(masterPassword), "utf-8");
+    const saltBuffer = Buffer.from(String(masterKey), "utf-8");
+    crypto.pbkdf2(passwordBuffer, saltBuffer, iterations, keyLength, digest, async (err, key) => {
+      if (err) {
+        console.error('Error al derivar la clave authKey:', err);
+        return reject(err);
+      }
+      const authKey = key.toString("hex");
+      try {
+        await ipcRenderer.invoke("store-auth-key", email, authKey);
+        resolve(authKey);
+      } catch (error) {
+        console.error("Error almacenando authKey:", error);
+        reject(error);
+      }
+    });
+  });
+}
+
+async function generateMasterKey(email, masterPassword) {
+  const saltBuffer = Buffer.from(String(email), "utf-8");
+  const passwordBuffer = Buffer.from(String(masterPassword), "utf-8");
+  crypto.pbkdf2(saltBuffer, passwordBuffer, iterations, keyLength, digest,  async (err, key) => {
+    
+    if (err) {
+      console.error('Error al derivar la clave maestra:', err);
+      return;
+    }
+
+    const masterKey = key.toString("hex");
+
+    try {
+      await ipcRenderer.invoke("store-master-key", email, masterKey);
+      await generateAuthKey(email, masterPassword, masterKey);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+
+  });
+}
+
+async function decryptCredential(salt, encryptedData) {
+  const masterKey = await ipcRenderer.invoke("get-master-key");
+  console.log(masterKey)
+  const masterKeyBuffer = Buffer.from(masterKey, 'hex');
+  const iv = Buffer.from(salt, "hex");
+  const decipher = crypto.createDecipheriv("aes-256-cbc", masterKeyBuffer, iv);
+  let decrypted = decipher.update(encryptedData, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+  return decrypted;
+}
+
+async function encryptCredential(data) {
+  // TO DO PLACEHOLDER
+  const masterKey = ipcRenderer.invoke("get-master-key"); 
+  const salt = data
+  crypto.pbkdf2(masterKey, salt, iterations, keyLength, digest, (err, key) => {
+    if (err) {
+      console.error('Error al derivar la clave para cifrar:', err);
+      return;
+    }
+    const encryptedData = data
+    const data = key
+    return encryptedData
+  });
 }
 
 contextBridge.exposeInMainWorld("api", {
-  generateHash: (email, masterPassword) => generateHash(email, masterPassword),
+  generateMasterKey: (email, masterKey) => generateMasterKey(email, masterKey),
   sendMessage: (channel, data) => ipcRenderer.send(channel, data),
   changeView: (viewPath) => ipcRenderer.invoke("change-view", viewPath),
-  storeMasterPassword: (email, masterPassword) => ipcRenderer.invoke("store-master-password", email, masterPassword)
+  storeMasterKey: (email, masterKey) => ipcRenderer.invoke("store-master-key", email, masterKey),
+  storeAuthKey: (email, authKey) => ipcRenderer.invoke("store-auth-key",email, authKey),
+  getMasterKey: () => ipcRenderer.invoke("get-master-key"),
+  getAuthKey: () => ipcRenderer.invoke("get-auth-key"),
+  getEmail: () => ipcRenderer.invoke("get-email"),
+  decryptCredential: (salt, encryptedData) => decryptCredential(salt, encryptedData),
+  encryptCredential: (salt, data) => encryptCredential(salt, data)
 });
-
-
-
