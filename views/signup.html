@@ -1,142 +1,64 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
   <link href="css/style.css" rel="stylesheet">
-  <title>Registro en la Plataforma</title>
 </head>
+
 <body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-  <img src="../resources/safe-box.png" alt="Caja segura" class="p-6" width="250" height="250">
-  
-  <div id="alertBox" class="hidden flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+  <img src="../resources/safe-box.png" alt="" class="p-6" width="250" height="250">
+  <div id="alertBox"
+    class="hidden flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+    role="alert">
+    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+      viewBox="0 0 20 20">
+      <path
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
     </svg>
     <span class="sr-only">Info</span>
     <div id="alertMessage">
       <span class="font-medium">Error!</span> Por favor, revisa los campos e intenta de nuevo.
     </div>
   </div>
-  
-  <div class="w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+  <div
+    class="w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
     <form class="space-y-6" action="#" id="loginForm">
-      <h5 class="text-2xl font-semibold text-gray-900 dark:text-white text-center">Regístrate en nuestra plataforma</h5>
-      
+      <h5 class="text-2xl font-semibold text-gray-900 dark:text-white text-center">Crear cuenta
+      </h5>
       <div>
-        <label for="inputEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-        <input id="inputEmail" type="email" name="email" class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="name@gmail.com" required />
+        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+        <input id="inputEmail" type="email" name="email"
+          class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="name@gmail.com" required />
       </div>
-      
       <div>
-        <label for="inputPassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña maestra</label>
-        <input type="password" name="password" id="inputPassword" class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="••••••••••••••••" required />
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña
+          maestra</label>
+        <input type="password" name="password" id="inputPassword"
+          class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="••••••••••••••••" required />
       </div>
-      
       <div>
-        <label for="inputConfirmPassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repite contraseña maestra</label>
-        <input type="password" name="confirmPassword" id="inputConfirmPassword" class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="••••••••••••••••" required />
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> Repetir contraseña
+          maestra</label>
+        <input type="password" name="password" id="inputRepeatPassword"
+          class="w-full p-3 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="••••••••••••••••" required />
       </div>
-      
-      <div class="max-w-sm">
-        <div class="flex items-center mb-2">
-          <div id="hs-strong-password" data-hs-strong-password='{
-            "target": "#hs-strong-password-indicator",
-            "hints": "#hs-strong-password-hints",
-            "stripClasses": "hs-strong-password:opacity-100 hs-strong-password-accepted:bg-teal-500 h-2 flex-auto rounded-full bg-blue-500 opacity-50 mx-1"
-          }' class="flex-1 h-2 rounded-full bg-gray-300"></div>
-          <span id="password-level-text" class="ml-2 text-sm text-gray-800 dark:text-neutral-200"></span>
-        </div>
-        <div id="hs-strong-password-hints" class="mb-3">
-          <h4 class="my-2 text-sm font-semibold text-gray-800 dark:text-white">
-            Tu contraseña debe contener:
-          </h4>
-          <ul class="space-y-1 text-sm text-gray-500 dark:text-neutral-500">
-            <li data-hs-strong-password-hints-rule-text="minLength" class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-              <span class="hidden" data-check="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span data-uncheck="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </span>
-              Mínimo 6 caracteres.
-            </li>
-            <li data-hs-strong-password-hints-rule-text="lowercase" class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-              <span class="hidden" data-check="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span data-uncheck="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </span>
-              Al menos una letra minúscula.
-            </li>
-            <li data-hs-strong-password-hints-rule-text="uppercase" class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-              <span class="hidden" data-check="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span data-uncheck="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </span>
-              Al menos una letra mayúscula.
-            </li>
-            <li data-hs-strong-password-hints-rule-text="numbers" class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-              <span class="hidden" data-check="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span data-uncheck="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </span>
-              Al menos un número.
-            </li>
-            <li data-hs-strong-password-hints-rule-text="specialChar" class="hs-strong-password-active:text-teal-500 flex items-center gap-x-2">
-              <span class="hidden" data-check="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </span>
-              <span data-uncheck="">
-                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </span>
-              Al menos un carácter especial.
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      <button id="btnLogin" type="submit" class="w-full px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-800">
-        Regístrame
+      <button id="btnSignUp" type="submit"
+        class="w-full px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-800">
+        Crear cuenta
       </button>
-      
       <p class="text-sm font-medium text-center text-gray-500 dark:text-gray-300">
-        ¿Ya tienes una cuenta? <a href="./login.html" class="text-blue-700 hover:underline dark:text-blue-500">Iniciar sesión</a>
+        ¿Ya tienes una cuenta? <a href="./signup.html" class="text-blue-700 hover:underline dark:text-blue-500">Iniciar
+          sesión</a>
       </p>
     </form>
   </div>
-  
   <script type="module" src="../renderers/signupRenderer.js"></script>
 </body>
+
 </html>

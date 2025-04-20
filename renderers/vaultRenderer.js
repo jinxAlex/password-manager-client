@@ -3,40 +3,41 @@ import { SERVER_OBTAIN_USER_CREDENTIALS } from '../config/config.js';
 const container = document.getElementById("accordion-container");
 const template = document.querySelector("template");
 
-const xhr = new XMLHttpRequest();
-let credentialList = [];
-
 async function getCredentials() {
-    const username = "VioletSorrengail@gmail.com";
-    const authKey = await window.parent.api.getAuthKey();
-    const basicAuth = btoa(`${username}:${authKey}`);
-
-    xhr.open("POST", SERVER_OBTAIN_USER_CREDENTIALS, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Authorization", `Basic ${basicAuth}`);
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const credential = JSON.parse(this.responseText);
-            credentialList = credential;
-            console.log(credentialList);
-            fillCredentials();
-        }
-    };
-
-    const data = JSON.stringify({ email: username });
-    xhr.send(data);
-}
-
-async function fillCredentials() {
-    if (!Array.isArray(credentialList) || credentialList.length === 0) {
+    try {
+      const username = "VioletSorrengail@gmail.com";
+      const authKey = await window.parent.api.getAuthKey();
+      const basicAuth = btoa(`${username}:${authKey}`);
+  
+      const response = await fetch(SERVER_OBTAIN_USER_CREDENTIALS, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Basic ${basicAuth}`,
+        },
+        body: JSON.stringify({ email: username }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+      }
+  
+      const credentialList = await response.json();
+      await fillCredentials(credentialList);
+    } catch (err) {
+      console.error("No se pudo obtener las credenciales:", err);
+    }
+  }
+  
+async function fillCredentials(list) {
+    if (!Array.isArray(list) || list.length === 0) {
         console.error("credentialList no es un array válido o está vacío");
         return;
     }
 
     let idCounter = 0;
 
-    for (const cred of credentialList) {
+    for (const cred of list) {
         if (!cred.salt || !cred.encryptedData) {
             console.error("Salt o encryptedData está vacío para la credencial:", cred);
             continue;
@@ -62,14 +63,14 @@ async function fillCredentials() {
 
                 const inputs = clone.querySelectorAll("input");
                 const span = clone.querySelector('#entry_name');
-                span.textContent = entry_name; 
+                span.textContent = entry_name;
                 inputs[0].value = username;
                 inputs[1].value = password;
                 inputs[2].value = url;
 
                 container.appendChild(clone);
 
-                console.log("Credencial descifrada:", data); 
+                console.log("Credencial descifrada:", data);
             } else {
                 console.error("Fallo al descifrar la credencial:", cred);
             }

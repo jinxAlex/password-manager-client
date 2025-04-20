@@ -39,7 +39,7 @@ document.getElementById("btnLogin").addEventListener("click", async (event) => {
             body: JSON.stringify({ email, password: authKey }),
         });
 
-        const result = await response.text(); // o .json() si es JSON
+        const result = await response.text();
 
         if (result === "User not found") {
             errorMsg += "El correo introducido no está en nuestro sistema.";

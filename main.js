@@ -1,19 +1,16 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const keytar = require("keytar");
-const path = require("path");
+import { app, BrowserWindow, ipcMain } from "electron";
+import keytar from "keytar";
+import path from "path";
+import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL} from "./config/config.js";
+import Store from "electron-store";
+import { fileURLToPath } from "url";
 
-let store;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const storeReady = (async () => {
-    const module = await import('electron-store');
-    const Store = module.default;
-    store = new Store();
-})();
-const SERVICE_MASTER_KEY = "passwordManager_MasterKey";
-const SERVICE_AUTH_KEY = "passwordManager_AuthKey";
+const store = new Store();
 
-
-
+let mainWindow; 
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -25,7 +22,7 @@ function createWindow() {
         title: "BlackVault",
         show: false, // La ventana se crea oculta
         webPreferences: {
-            preload: path.join(__dirname, "preload.js"), // Carga el script de precarga
+            preload: path.join(__dirname, "preload.mjs"), // Carga el script de precarga
             contextIsolation: true, // Mantiene el aislamiento de contexto (seguridad)
             enableRemoteModule: false, // Evita acceso remoto no seguro
             nodeIntegration: false, // Bloquea acceso directo a Node.js en el renderizador
@@ -76,7 +73,7 @@ ipcMain.handle("store-master-key", async (event, email, masterPassword) => {
 
 ipcMain.handle("store-auth-key", async (event,email, authKey) => {
     await storeAuthKey(email, authKey);
-    await new Promise(resolve => setTimeout(resolve, 500)); //No se guarda inmediatamente en Keytar, tiene un pequeño retraso
+    await new Promise(resolve => setTimeout(resolve, 500)); //It is not stored on keytar inmediately, it has a delay
 });
 
 ipcMain.handle("get-master-key", async (event) => {
@@ -103,8 +100,7 @@ function deleteMasterPassowrd() {
 }
 
 async function storeMasterPassword(email, masterPassword) {
-    await storeReady; // asegurate de que 'store' esté listo
-    store.set("userEmail", email);
+    store.set(SERVICE_EMAIL, email);
     console.log(email)
     try {
         await keytar.setPassword(SERVICE_MASTER_KEY, email, masterPassword);
@@ -125,7 +121,7 @@ async function storeAuthKey(email, authKey) {
 
 async function getMasterPassword() {
     try {
-        const email = store.get("userEmail");
+        const email = store.get(SERVICE_EMAIL);
         const storedPassword = await keytar.getPassword(SERVICE_MASTER_KEY, email);
         console.log("Contraseña maestra recuperada:", storedPassword);
         return storedPassword;
@@ -136,8 +132,7 @@ async function getMasterPassword() {
 
 async function getAuthKey() {
     try {
-        await storeReady;
-        const email = store.get("userEmail");
+        const email = store.get(SERVICE_EMAIL);
         const storedPassword = await keytar.getPassword(SERVICE_AUTH_KEY, email);
         console.log("AuthKey recuperado:", storedPassword);
         return storedPassword;
