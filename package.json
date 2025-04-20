@@ -6,7 +6,7 @@
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alejandro Fernández Sánchez",
+  "author": "Alejandro",
   "license": "ISC",
   "description": "mi plantilla Electron",
   "devDependencies": {
