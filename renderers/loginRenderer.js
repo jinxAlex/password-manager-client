@@ -1,8 +1,8 @@
 import { SERVER_USER_LOGIN } from '../config/config.js';
 
-const inputEmail = document.getElementById("inputEmail")
-const inputPassword = document.getElementById("inputPassword")
-const alertBox = document.getElementById("alertBox")
+const inputEmail = document.getElementById("inputEmail");
+const inputPassword = document.getElementById("inputPassword");
+const alertBox = document.getElementById("alertBox");
 const alertMessage = document.getElementById("alertMessage");
 
 document.getElementById("btnLogin").addEventListener("click", async (event) => {

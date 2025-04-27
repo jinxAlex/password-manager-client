@@ -67,29 +67,31 @@ async function decryptCredential(salt, encryptedData) {
 }
 
 async function encryptCredential(data) {
-  // TO DO PLACEHOLDER
-  const masterKey = ipcRenderer.invoke("get-master-key");
-  const salt = data
-  crypto.pbkdf2(masterKey, salt, ITERATIONS_PBKDF2, keyLength, digest, (err, key) => {
-    if (err) {
-      console.error('Error al derivar la clave para cifrar:', err);
-      return;
-    }
-    const encryptedData = data
-    const data = key
-    return encryptedData
-  });
+  const masterkey = await ipcRenderer.invoke("get-master-key");
+  const key = Buffer.from(masterkey, 'hex');
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  let encrypted = cipher.update(data, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  return { encryptedData: encrypted, iv: iv.toString('hex') }; 
 }
 
 contextBridge.exposeInMainWorld("api", {
   generateMasterKey: (email, masterKey) => generateMasterKey(email, masterKey),
   sendMessage: (channel, data) => ipcRenderer.send(channel, data),
   changeView: (viewPath) => ipcRenderer.invoke("change-view", viewPath),
+  showModal: (show) => ipcRenderer.invoke("show-modal", show),
   storeMasterKey: (email, masterKey) => ipcRenderer.invoke("store-master-key", email, masterKey),
   storeAuthKey: (email, authKey) => ipcRenderer.invoke("store-auth-key", email, authKey),
   getMasterKey: () => ipcRenderer.invoke("get-master-key"),
   getAuthKey: () => ipcRenderer.invoke("get-auth-key"),
   getEmail: () => ipcRenderer.invoke("get-email"),
   decryptCredential: (salt, encryptedData) => decryptCredential(salt, encryptedData),
-  encryptCredential: (salt, data) => encryptCredential(salt, data)
+  encryptCredential: (data) => encryptCredential(data),
+  refreshVault: () => ipcRenderer.send("refresh-vault"),
+  onRefreshVault: (callback) => {
+    ipcRenderer.on("refresh-vault", (event) => {
+      callback();
+    });
+  }
 });
