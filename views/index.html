@@ -9,6 +9,9 @@
 </head>
 
 <body>
+    <div id="overlay"
+    class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    </div>
     <div class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto bg-blue w-64 dark:bg-gray-800">
         <h5 class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Password Manager</h5>
         <div class="py-4 overflow-y-auto">
@@ -43,7 +46,7 @@
     <div class="ml-64">
         <iframe name="content" src="./menu/vault.html" class="w-full h-screen"></iframe>
     </div>
-    <script src="../renderers/indexRenderer.js"></script>
+    <script type="module" src="../renderers/indexRenderer.js"></script>
 </body>
 
 </html>
