@@ -16,8 +16,7 @@ async function getCredentials() {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Basic ${basicAuth}`,
-      },
-      body: JSON.stringify({ email: username }),
+      }
     });
 
     if (!response.ok) {
