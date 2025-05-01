@@ -1,4 +1,4 @@
-import { SERVER_OBTAIN_USER_CREDENTIALS } from '../config/config.js';
+import { SERVER_OBTAIN_USER_CREDENTIALS, SERVER_DELETE_CREDENTIAL } from '../config/config.js';
 
 const container = document.getElementById("accordion-container");
 const template = document.querySelector("template");
@@ -31,6 +31,7 @@ async function getCredentials() {
 }
 
 async function fillCredentials(list) {
+  container.innerHTML = "";
   if (!Array.isArray(list) || list.length === 0) {
     console.error("credentialList no es un array válido o está vacío");
     return;
@@ -52,6 +53,7 @@ async function fillCredentials(list) {
         const { entry_name, username, password, url } = data;
 
         const clone = template.content.cloneNode(true);
+        const itemNode = clone.querySelector(".accordion-item"); 
         const id = `accordion-${idCounter++}`;
 
         clone.querySelector("h2").id = `accordion-heading-${id}`;
@@ -68,6 +70,32 @@ async function fillCredentials(list) {
         inputs[0].value = username;
         inputs[1].value = password;
         inputs[2].value = url;
+
+        
+
+        const deleteBtn = clone.querySelector('button[id="deleteCredential"]');
+        deleteBtn.addEventListener("click", async () => {
+          const username = await window.parent.api.getEmail();
+          const authKey = await window.parent.api.getAuthKey();
+          const basicAuth = btoa(`${username}:${authKey}`);
+          try {
+            const result = await fetch(SERVER_DELETE_CREDENTIAL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Basic ${basicAuth}`,
+              },
+              body: JSON.stringify({ id: cred.id }),
+            });
+            if (result.ok) {
+              itemNode.remove();
+            } else {
+              console.error(`Delete failed: ${result.status} ${result.statusText}`);
+            }
+          } catch (e) {
+            console.error("Error deleting credential:", e);
+          }
+        });
 
         container.appendChild(clone);
 
@@ -100,12 +128,11 @@ async function fillCredentials(list) {
         this.querySelector("svg").classList.add("rotate-180");
       }
     });
-  });
-
+  })
 }
 
 window.parent.api.onRefreshVault(() => {
-  getCredentials()
+  getCredentials();
 });
 
 document.getElementById('addCredential').addEventListener('click', () => {
