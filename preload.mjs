@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld("api", {
   generateMasterKey: (email, masterKey) => generateMasterKey(email, masterKey),
   sendMessage: (channel, data) => ipcRenderer.send(channel, data),
   changeView: (viewPath) => ipcRenderer.invoke("change-view", viewPath),
-  showModal: (show) => ipcRenderer.invoke("show-modal", show),
+  showModal: (show, data) => ipcRenderer.invoke("show-modal", show, data),
   storeMasterKey: (email, masterKey) => ipcRenderer.invoke("store-master-key", email, masterKey),
   storeAuthKey: (email, authKey) => ipcRenderer.invoke("store-auth-key", email, authKey),
   getMasterKey: () => ipcRenderer.invoke("get-master-key"),
@@ -18,6 +18,11 @@ contextBridge.exposeInMainWorld("api", {
   onRefreshVault: (callback) => {
     ipcRenderer.on("refresh-vault", (event) => {
       callback();
+    });
+  },
+  onDataSent: (callback) => {
+    ipcRenderer.on('dataSent', (event, payload) =>{ 
+      callback(payload)
     });
   }
 });

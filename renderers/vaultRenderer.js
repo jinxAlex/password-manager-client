@@ -3,8 +3,6 @@ import { SERVER_OBTAIN_USER_CREDENTIALS, SERVER_DELETE_CREDENTIAL } from '../con
 const container = document.getElementById("accordion-container");
 const template = document.querySelector("template");
 
-let visible = false
-
 async function getCredentials() {
   try {
     const username = await window.parent.api.getEmail();
@@ -44,16 +42,17 @@ async function fillCredentials(list) {
       console.error("Salt o encryptedData está vacío para la credencial:", cred);
       continue;
     }
+    let data;
 
     try {
       const decryptedData = await window.parent.api.decryptCredential(cred.salt, cred.encryptedData);
 
       if (decryptedData) {
-        const data = JSON.parse(decryptedData);
-        const { entry_name, username, password, url } = data;
+        data = JSON.parse(decryptedData);
+        const {entry_name, username, password, url } = data;
 
         const clone = template.content.cloneNode(true);
-        const itemNode = clone.querySelector(".accordion-item"); 
+        const itemNode = clone.querySelector(".accordion-item");
         const id = `accordion-${idCounter++}`;
 
         clone.querySelector("h2").id = `accordion-heading-${id}`;
@@ -71,9 +70,8 @@ async function fillCredentials(list) {
         inputs[1].value = password;
         inputs[2].value = url;
 
-        
-
         const deleteBtn = clone.querySelector('button[id="deleteCredential"]');
+        const editBtn = clone.querySelector('button[id="editCredential"]');
         deleteBtn.addEventListener("click", async () => {
           const username = await window.parent.api.getEmail();
           const authKey = await window.parent.api.getAuthKey();
@@ -97,6 +95,16 @@ async function fillCredentials(list) {
           }
         });
 
+        editBtn.addEventListener("click", async () => {
+          window.parent.api.showModal(true, {
+            id : cred.id,
+            edit: true,
+            entry_name,
+            username,
+            password,
+            url
+          });
+        });
         container.appendChild(clone);
 
         console.log("Credencial descifrada:", data);
@@ -136,7 +144,8 @@ window.parent.api.onRefreshVault(() => {
 });
 
 document.getElementById('addCredential').addEventListener('click', () => {
-  window.parent.api.showModal(true);
+  const data = { edit: false };
+  window.parent.api.showModal(true, data);
 });
 
 getCredentials();

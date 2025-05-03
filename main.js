@@ -53,6 +53,7 @@ function createWindow() {
     });
 
     modal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
+    modal.webContents.openDevTools();
 }
 
 //Fuerza a Electron a escribir su caché en userdata/, dentro de tu proyecto, evitando problemas de permisos.
@@ -83,7 +84,7 @@ ipcMain.on("refresh-vault", (event) => {
     mainWindow.webContents.send("refresh-vault");
 });
 
-ipcMain.handle("show-modal", async (event, show) => {
+ipcMain.handle("show-modal", async (event, show, data) => {
     if (show) {
         const [mainWidth, mainHeight] = mainWindow.getSize();
 
@@ -96,6 +97,13 @@ ipcMain.handle("show-modal", async (event, show) => {
         mainWindow.setBrowserView(modal);
         modal.setBounds({ x: x, y: y, width: 800, height: 600 });
         modal.setAutoResize({ width: false, height: false });
+        if (modal.webContents.isLoading()) {
+            modal.webContents.once('did-finish-load', () => {
+              modal.webContents.send('dataSent', data);
+            });
+          } else {
+            modal.webContents.send('dataSent', data);
+          }
     } else {
         mainWindow.setBrowserView(null);
     }

@@ -1,15 +1,20 @@
-import { SERVER_ADD_CREDENTIAL } from '../config/config.js';
+import { SERVER_ADD_CREDENTIAL, SERVER_EDIT_CREDENTIAL } from '../config/config.js';
 
 const inputCredentialName = document.getElementById("inputCredential");
 const inputUsername = document.getElementById("inputUsername");
 const inputPassword = document.getElementById("inputPassword");
 const inputUrl = document.getElementById("inputUrl");
+const header = document.getElementById("header");
+const button = document.getElementById("sendCredential");
+let edit = false;
+let editId;
+
 
 document.getElementById('close-modal').addEventListener('click', () => {
     window.api.showModal(false);
 });
 
-document.getElementById('send-credential').addEventListener('click', async () => {
+document.getElementById('sendCredential').addEventListener('click', async () => {
     let name = inputCredentialName.value.trim();
     let username = inputUsername.value.trim();
     let password = inputPassword.value.trim();
@@ -42,18 +47,36 @@ document.getElementById('send-credential').addEventListener('click', async () =>
         const authKey = await window.api.getAuthKey();
 
         const basicAuth = btoa(`${email}:${authKey}`);
+        let response
+        if(edit == false){
+            response = await fetch(SERVER_ADD_CREDENTIAL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${basicAuth}`,
+                },
+                body: JSON.stringify({
+                    encryptedData: encryptedData,
+                    salt: iv
+                }),
+            });
+        }else{
+            console.log
+            response = await fetch(SERVER_EDIT_CREDENTIAL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${basicAuth}`,
+                },
+                body: JSON.stringify({
+                    id: editId,
+                    encryptedData: encryptedData,
+                    salt: iv
+                }),
+            });
+        }
 
-        const response = await fetch(SERVER_ADD_CREDENTIAL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Basic ${basicAuth}`,
-            },
-            body: JSON.stringify({
-                encryptedData: encryptedData,
-                salt: iv
-            }),
-        });
+
 
         const result = await response.text();
 
@@ -70,6 +93,20 @@ document.getElementById('send-credential').addEventListener('click', async () =>
     } catch (error) {
         console.error("Error durante el proceso:", error);
         alert("Hubo un error al procesar la solicitud.");
+    }
+});
+
+window.api.onDataSent(data => {
+    if(data.edit == true){
+        edit = true;
+        editId = data.id;
+        header.textContent  = "Editar credencial";
+        button.textContent  = "Editar";
+        inputCredentialName.value = data.entry_name;
+        inputUsername.value = data.username;
+        inputPassword.value = data.password;
+        inputUrl.value = data.url;
+        console.log(data);
     }
 });
 
