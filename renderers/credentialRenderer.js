@@ -11,7 +11,7 @@ let editId;
 
 
 document.getElementById('close-modal').addEventListener('click', () => {
-    window.api.showModal(false);
+    window.api.showCredentialModal(false);
 });
 
 document.getElementById('sendCredential').addEventListener('click', async () => {

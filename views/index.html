@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div id="overlay" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center">
     </div>
     <div class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto bg-blue w-64 dark:bg-gray-800">
         <h5 class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Password Manager</h5>
@@ -36,10 +36,10 @@
                   </button>
                     <ul id="dropdown" class="hidden py-2 space-y-2 pl-8">
                           <li>
-                             <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Generar contraseña</a>
+                             <a href="#" id="generatePassword" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Generar contraseña</a>
                           </li>
                           <li>
-                             <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Exportar/Importar</a>
+                             <a href="#" id="export/import" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Exportar/Importar</a>
                           </li>
                     </ul>
                  </li>

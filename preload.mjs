@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld("api", {
   generateMasterKey: (email, masterKey) => generateMasterKey(email, masterKey),
   sendMessage: (channel, data) => ipcRenderer.send(channel, data),
   changeView: (viewPath) => ipcRenderer.invoke("change-view", viewPath),
-  showModal: (show, data) => ipcRenderer.invoke("show-modal", show, data),
+  showCredentialModal: (show, data) => ipcRenderer.invoke("show-credential-modal", show, data),
   storeMasterKey: (email, masterKey) => ipcRenderer.invoke("store-master-key", email, masterKey),
   storeAuthKey: (email, authKey) => ipcRenderer.invoke("store-auth-key", email, authKey),
   getMasterKey: () => ipcRenderer.invoke("get-master-key"),
@@ -15,8 +15,14 @@ contextBridge.exposeInMainWorld("api", {
   decryptCredential: (salt, encryptedData) => decryptCredential(salt, encryptedData),
   encryptCredential: (data) => encryptCredential(data),
   refreshVault: () => ipcRenderer.send("refresh-vault"),
+  showUtilitiesModal: (typeModal, show) => ipcRenderer.invoke("show-utilities-modal", typeModal, show),
   onRefreshVault: (callback) => {
     ipcRenderer.on("refresh-vault", (event) => {
+      callback();
+    });
+  },
+  onShowOverlay: (callback) => {
+    ipcRenderer.on("show-overlay", (event) => {
       callback();
     });
   },

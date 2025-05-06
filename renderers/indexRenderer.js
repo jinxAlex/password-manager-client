@@ -1,11 +1,13 @@
+// Esperamos a que se cargue
 document.addEventListener("DOMContentLoaded", () => {
   const iframe = document.querySelector('iframe[name="content"]');
-  const btn = document.getElementById('btnHerramientas');
-  const menu = document.getElementById('dropdown');
+  const btn = document.getElementById("btnHerramientas");
+  const menu = document.getElementById("dropdown");
+  const generatePassword = document.getElementById("generatePassword");
 
   document.querySelectorAll('a[target="content"]').forEach(link => {
     link.addEventListener("click", event => {
-      const destino = link.href;
+      const destination = link.href;
       let actual;
       try {
         actual = iframe.contentWindow.location.href;
@@ -13,18 +15,28 @@ document.addEventListener("DOMContentLoaded", () => {
         actual = iframe.src;
       }
 
-      if (destino === actual) {
+      if (destination === actual) {
         event.preventDefault();
       }
     });
   });
   
-  btn.addEventListener('click', function() {
-    // Alterna la visibilidad
-    menu.classList.toggle('hidden');
-    
-    // Opcional: actualizar aria-expanded
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
+  btn.addEventListener("click", function() {  // Alterna la visibilidad
+    menu.classList.toggle("hidden");
   });
+
+  generatePassword.addEventListener("click", function() {
+    window.api.showUtilitiesModal("password", true);
+  });
+});
+
+window.parent.api.onShowOverlay(() => {
+  const overlay = document.getElementById("overlay");
+
+  if (overlay.classList.contains("hidden")) {
+    overlay.classList.remove("hidden");
+  } else {
+    overlay.classList.add("hidden");
+  }
+  
 });

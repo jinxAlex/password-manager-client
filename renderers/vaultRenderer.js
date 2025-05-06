@@ -96,7 +96,7 @@ async function fillCredentials(list) {
         });
 
         editBtn.addEventListener("click", async () => {
-          window.parent.api.showModal(true, {
+          window.parent.api.showCredentialModal(true, {
             id : cred.id,
             edit: true,
             entry_name,
@@ -145,7 +145,7 @@ window.parent.api.onRefreshVault(() => {
 
 document.getElementById('addCredential').addEventListener('click', () => {
   const data = { edit: false };
-  window.parent.api.showModal(true, data);
+  window.parent.api.showCredentialModal(true, data);
 });
 
 getCredentials();
