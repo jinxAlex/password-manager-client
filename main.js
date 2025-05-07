@@ -121,7 +121,7 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
         mainWindow.setBrowserView(credentialModal);
         credentialModal.setBounds({ x: x, y: y, width: 800, height: 600 });
         credentialModal.setAutoResize({ width: false, height: false });
-        credentialModal.webContents.openDevTools()
+        //credentialModal.webContents.openDevTools()
         if (credentialModal.webContents.isLoading()) {
             credentialModal.webContents.once('did-finish-load', () => {
                 credentialModal.webContents.send('dataSent', data);
@@ -152,7 +152,7 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
     if (show) {
         utilitiesModal.center();
         utilitiesModal.show();
-        utilitiesModal.webContents.openDevTools({ mode: "undocked" });
+        //utilitiesModal.webContents.openDevTools({ mode: "undocked" });
     } else {
         utilitiesModal.hide();
     }
@@ -177,14 +177,6 @@ ipcMain.handle("get-auth-key", async (event) => {
 
 ipcMain.handle("get-email", async (event) => {
     return getEmail();
-});
-
-ipcMain.on("credential-modal-requires-password", () => {
-    utilitiesModal && utilitiesModal.webContents.send("credential-modal-requires-password");
-});
-
-ipcMain.on("generated-password", (event, password) => {
-    credentialModal.webContents.send("generated-password", password);
 });
 
 async function storeMasterPassword(email, masterPassword) {
