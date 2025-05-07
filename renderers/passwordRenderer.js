@@ -4,6 +4,8 @@ const options = [
     document.getElementById('advancedOption'),
 ];
 
+let isRequired = false;
+
 const rangeInput = document.getElementById('labels-range-input');
 const outputInput = document.getElementById('inputPassword');
 const btnClose = document.getElementById('close-modal');
@@ -69,11 +71,13 @@ function generatePassword() {
 options[0].checked = true;
 generatePassword();
 
-document.getElementById('password-form').addEventListener('submit', event => {
+document.getElementById('password-form').addEventListener('click', event => {
     event.preventDefault();
     window.api.showUtilitiesModal("password", false);
+    //window.api.generatedPassword(outputInput.value.trim());
 });
 
 btnClose.addEventListener('click', () => {
     window.api.showUtilitiesModal("password", false);
 });
+

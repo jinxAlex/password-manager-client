@@ -5,10 +5,16 @@ const inputUsername = document.getElementById("inputUsername");
 const inputPassword = document.getElementById("inputPassword");
 const inputUrl = document.getElementById("inputUrl");
 const header = document.getElementById("header");
-const button = document.getElementById("sendCredential");
+const buttonSend = document.getElementById("sendCredential");
+const buttonGenerate = document.getElementById("generatePassword");
+
 let edit = false;
 let editId;
 
+buttonGenerate.addEventListener("click", async function() {
+    window.api.showUtilitiesModal("password", true);
+
+});
 
 document.getElementById('close-modal').addEventListener('click', () => {
     window.api.showCredentialModal(false);
@@ -48,7 +54,7 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
 
         const basicAuth = btoa(`${email}:${authKey}`);
         let response
-        if(edit == false){
+        if (edit == false) {
             response = await fetch(SERVER_ADD_CREDENTIAL, {
                 method: "POST",
                 headers: {
@@ -60,7 +66,7 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
                     salt: iv
                 }),
             });
-        }else{
+        } else {
             console.log
             response = await fetch(SERVER_EDIT_CREDENTIAL, {
                 method: "POST",
@@ -97,11 +103,11 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
 });
 
 window.api.onDataSent(data => {
-    if(data.edit == true){
+    if (data.edit == true) {
         edit = true;
         editId = data.id;
-        header.textContent  = "Editar credencial";
-        button.textContent  = "Editar";
+        header.textContent = "Editar credencial";
+        button.textContent = "Editar";
         inputCredentialName.value = data.entry_name;
         inputUsername.value = data.username;
         inputPassword.value = data.password;
