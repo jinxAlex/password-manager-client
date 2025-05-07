@@ -1,7 +1,7 @@
-import { app, BrowserWindow, BrowserView, ipcMain } from "electron";
+import { app, BrowserWindow, BrowserView, ipcMain, screen  } from "electron";
 import keytar from "keytar";
 import path from "path";
-import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL } from "./config/config.js";
+import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL, TIMING } from "./config/config.js";
 import Store from "electron-store";
 import { fileURLToPath } from "url";
 
@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const store = new Store();
 
 // Variables para las modales y la ventana principal
-let mainWindow, credentialModal, utilitiesModal;
+let mainWindow, credentialModal, utilitiesModal, errorAlert;
 
 // Crea la ventana principal
 function createWindow() {
@@ -33,6 +33,7 @@ function createWindow() {
     });
 
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
+    mainWindow.webContents.openDevTools();
 
     mainWindow.setMenu(null);
 
@@ -72,38 +73,45 @@ function createWindow() {
             sandbox: false
         }
     });
-
     credentialModal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
 }
 
-//Fuerza a Electron a escribir su caché en userdata/, dentro de tu proyecto, evitando problemas de permisos.
-app.setPath("userData", path.join(__dirname, "userdata"));
+// Evento para mostrar las alertas de tipo error
+ipcMain.handle("show-error-alert", async (event, data) => {
 
-// Evento cuando Electron está listo
-app.whenReady().then(() => {
-    createWindow();
-    app.on("activate", () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
+    errorAlert = new BrowserWindow({
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        focusable: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.mjs'),
+            contextIsolation: true,
+            nodeIntegration: false,
         }
     });
-    ipcMain.handle("change-view", async (event, viewPath) => {
-        const fullPath = path.join(__dirname, viewPath);
-        await mainWindow.loadFile(fullPath);
-    });
-});
+    errorAlert.setIgnoreMouseEvents(true, { forward: true });
 
-// Evento para cerrar la aplicación correctamente
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        deleteMasterPassowrd();
-        app.quit();
-    }
-});
+    const toastWidth  = 300;
+    const toastHeight = 80;
+    const margin      = 20;
 
-// Evento para refrescar las credenciales
-ipcMain.on("refresh-vault", (event) => {
-    mainWindow.webContents.send("refresh-vault");
+    const { workArea } = screen.getPrimaryDisplay();
+
+    const x = Math.round(workArea.x + (workArea.width  - toastWidth ) / 2);
+    const y = Math.round(workArea.y + (workArea.height - toastHeight) - margin);
+
+    errorAlert.setSize(toastWidth, toastHeight);
+    errorAlert.setPosition(x, y);
+
+    errorAlert.loadFile(path.join(__dirname, 'views', 'alert', 'error.html'))
+    errorAlert.once('ready-to-show', () => {
+        errorAlert.show();
+        errorAlert.webContents.send('show-error-message', data);
+        setTimeout(() => errorAlert.close(), TIMING);
+    })
 });
 
 // Evento para mostrar la modal de credenciales
@@ -136,7 +144,9 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
-    mainWindow.webContents.send('show-overlay');
+    if (mainWindow.getBrowserView()  != credentialModal) {
+        mainWindow.webContents.send('show-overlay');
+    }
     let utilityFile;
     switch (typeModal) {
         case "password":
@@ -156,6 +166,36 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
     } else {
         utilitiesModal.hide();
     }
+});
+
+//Fuerza a Electron a escribir su caché en userdata/, dentro de tu proyecto, evitando problemas de permisos.
+app.setPath("userData", path.join(__dirname, "userdata"));
+
+// Evento cuando Electron está listo
+app.whenReady().then(() => {
+    createWindow();
+    app.on("activate", () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+    ipcMain.handle("change-view", async (event, viewPath) => {
+        const fullPath = path.join(__dirname, viewPath);
+        await mainWindow.loadFile(fullPath);
+    });
+});
+
+// Evento para cerrar la aplicación correctamente
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        deleteMasterPassowrd();
+        app.quit();
+    }
+});
+
+// Evento para refrescar las credenciales
+ipcMain.on("refresh-vault", (event) => {
+    mainWindow.webContents.send("refresh-vault");
 });
 
 ipcMain.handle("store-master-key", async (event, email, masterPassword) => {

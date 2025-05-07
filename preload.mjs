@@ -16,6 +16,12 @@ contextBridge.exposeInMainWorld("api", {
   encryptCredential: (data) => encryptCredential(data),
   refreshVault: () => ipcRenderer.send("refresh-vault"),
   showUtilitiesModal: (typeModal, show) => ipcRenderer.invoke("show-utilities-modal", typeModal, show),
+  showErrorModal: (data) => ipcRenderer.invoke("show-error-alert", data),
+  onShowErrorMessage: (callback) => {
+    ipcRenderer.on("show-error-message", (event,payload) => {
+      callback(payload);
+    });
+  },
   onRefreshVault: (callback) => {
     ipcRenderer.on("refresh-vault", (event) => {
       callback();
