@@ -17,12 +17,18 @@ contextBridge.exposeInMainWorld("api", {
   refreshVault: () => ipcRenderer.send("refresh-vault"),
   showUtilitiesModal: (typeModal, show) => ipcRenderer.invoke("show-utilities-modal", typeModal, show),
   showErrorModal: (data) => ipcRenderer.invoke("show-error-alert", data),
-  onShowErrorMessage: (cb) => {
-    ipcRenderer.on('show-error-message', (_e, payload) => cb(payload));
+  onShowErrorMessage: (callback) => {
+    ipcRenderer.on('show-error-message', (event, payload) => callback(payload));
   },
   onRefreshVault: (callback) => {
     ipcRenderer.on("refresh-vault", (event) => {
       callback();
+    });
+  },
+  generatePasswordToCredential: () => ipcRenderer.send("generate-password-to-credential"),
+  onGeneratePasswordToCredential: (callback) => {
+    ipcRenderer.on("generate-password-to-credential", (event,payload) => {
+      callback(payload);
     });
   },
   onShowOverlay: (callback) => {

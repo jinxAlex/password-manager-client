@@ -81,3 +81,7 @@ btnClose.addEventListener('click', () => {
     window.api.showUtilitiesModal("password", false);
 });
 
+
+window.api.onGeneratePasswordToCredential((payload) => {
+    console.log("HOLA BUENAS TARDES", payload);
+});

@@ -13,7 +13,7 @@ let editId;
 
 buttonGenerate.addEventListener("click", async function() {
     window.api.showUtilitiesModal("password", true);
-
+    window.api.sendMessage("generate-password-to-credential");
 });
 
 document.getElementById('close-modal').addEventListener('click', () => {

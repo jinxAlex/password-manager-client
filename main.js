@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserView, ipcMain, screen  } from "electron";
+import { app, BrowserWindow, BrowserView, ipcMain, screen } from "electron";
 import keytar from "keytar";
 import path from "path";
 import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL, TIMING } from "./config/config.js";
@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const store = new Store();
 
 // Variables para las modales y la ventana principal
-let mainWindow, credentialModal, utilitiesModal, errorAlert;
+let mainWindow, credentialModal, utilitiesModal;
 
 // Crea la ventana principal
 function createWindow() {
@@ -47,16 +47,6 @@ function createWindow() {
         mainWindow = null;
     });
 
-    credentialModal = new BrowserView({
-        webPreferences: {
-            preload: path.join(__dirname, "preload.mjs"),
-            contextIsolation: true,
-            enableRemoteModule: false,
-            nodeIntegration: false,
-            sandbox: false
-        }
-    });
-
     utilitiesModal = new BrowserWindow({
         parent: mainWindow,
         modal: true,
@@ -65,6 +55,7 @@ function createWindow() {
         backgroundColor: '#00000000',
         show: false,
         resizable: false,
+        level: 'floating',
         webPreferences: {
             preload: path.join(__dirname, "preload.mjs"),
             contextIsolation: true,
@@ -73,18 +64,18 @@ function createWindow() {
             sandbox: false
         }
     });
-    credentialModal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
+
 }
 
 // Evento para mostrar las alertas de tipo error
 ipcMain.handle("show-error-alert", async (_event, data) => {
-    const toastWidth  = 400;
+    const toastWidth = 400;
     const toastHeight = 80;
-    const margin      = 20;
+    const margin = 20;
 
     const { workArea } = screen.getPrimaryDisplay();
 
-    const x = Math.round(workArea.x + (workArea.width  - toastWidth ) / 2);
+    const x = Math.round(workArea.x + (workArea.width - toastWidth) / 2);
     const y = Math.round(workArea.y + (workArea.height - toastHeight) - margin);
 
     const errorAlert = new BrowserWindow({
@@ -99,76 +90,92 @@ ipcMain.handle("show-error-alert", async (_event, data) => {
         resizable: false,
         focusable: false,
         webPreferences: {
-          preload: path.join(__dirname, "preload.mjs"),
-          contextIsolation: true,
-          enableRemoteModule: false,
-          nodeIntegration: false,
-          sandbox: false
+            preload: path.join(__dirname, "preload.mjs"),
+            contextIsolation: true,
+            enableRemoteModule: false,
+            nodeIntegration: false,
+            sandbox: false
         }
-      });
+    });
     errorAlert.setIgnoreMouseEvents(true, { forward: true });
-  
+
     errorAlert.loadFile(path.join(__dirname, 'views', 'alert', 'error.html'));
-  
+
     // Espera a que el HTML y el preload estén listos
     errorAlert.webContents.on('did-finish-load', () => {
         errorAlert.webContents.send('show-error-message', data);
         errorAlert.show();
         setTimeout(() => errorAlert.close(), TIMING);
-      });
-  });
+    });
+});
 
 // Evento para mostrar la modal de credenciales
 ipcMain.handle("show-credential-modal", async (event, show, data) => {
     mainWindow.webContents.send('show-overlay');
     if (show) {
-        const [mainWidth, mainHeight] = mainWindow.getSize();
+        credentialModal = new BrowserWindow({
+            parent: mainWindow,
+            modal: true,
+            frame: false,
+            transparent: true,
+            backgroundColor: '#00000000',
+            show: false,
+            resizable: false,
+            webPreferences: {
+                preload: path.join(__dirname, "preload.mjs"),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false,
+                sandbox: false
+            }
+        });
+        // Carga el HTML de la modal y espera
+        await credentialModal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
 
-        const modalWidth = 800;
-        const modalHeight = 600;
+        // Mándale los datos
+        credentialModal.webContents.send('dataSent', data);
 
-        const x = Math.floor((mainWidth - modalWidth) / 2);
-        const y = Math.floor((mainHeight - modalHeight) / 2);
+        // Centra y muestra
+        credentialModal.center();
+        credentialModal.show();
 
-        mainWindow.setBrowserView(credentialModal);
-        credentialModal.setBounds({ x: x, y: y, width: 800, height: 600 });
-        credentialModal.setAutoResize({ width: false, height: false });
-        //credentialModal.webContents.openDevTools()
-        if (credentialModal.webContents.isLoading()) {
-            credentialModal.webContents.once('did-finish-load', () => {
-                credentialModal.webContents.send('dataSent', data);
-            });
-        } else {
-            credentialModal.webContents.send('dataSent', data);
-        }
     } else {
-        mainWindow.setBrowserView(null);
+        credentialModal.destroy();
     }
 });
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
-    if (mainWindow.getBrowserView()  != credentialModal) {
+    //utilitiesModal.webContents.openDevTools({ mode: "undocked" });
+    if (credentialModal != null) {
+        credentialModal.hide(); 
+    }else{
         mainWindow.webContents.send('show-overlay');
     }
-    let utilityFile;
-    switch (typeModal) {
-        case "password":
-            utilityFile = "password.html";
-            break;
-        case "export/import":
-            utilityFile = "export-import.html";
-            break;
-        default:
-            return;
-    }
-    await utilitiesModal.loadFile(path.join(__dirname, "views", "actions", utilityFile));
     if (show) {
+        let utilityFile;
+        switch (typeModal) {
+            case "password":
+                utilityFile = "password.html";
+                break;
+            case "export/import":
+                utilityFile = "export-import.html";
+                break;
+            default:
+                return;
+        }
+        await utilitiesModal.loadFile(path.join(__dirname, "views", "actions", utilityFile));
+
         utilitiesModal.center();
         utilitiesModal.show();
-        //utilitiesModal.webContents.openDevTools({ mode: "undocked" });
+        utilitiesModal.moveTop();
+        utilitiesModal.focus();  
     } else {
         utilitiesModal.hide();
+        if (credentialModal != null) {
+            credentialModal.show(); 
+            mainWindow.webContents.send('show-overlay');
+        }
     }
 });
 
@@ -200,6 +207,12 @@ app.on("window-all-closed", () => {
 // Evento para refrescar las credenciales
 ipcMain.on("refresh-vault", (event) => {
     mainWindow.webContents.send("refresh-vault");
+});
+
+ipcMain.on("generate-password-to-credential", (event) => {
+    utilitiesModal.webContents.on('did-finish-load', () => {
+        utilitiesModal.webContents.send("generate-password-to-credential");
+    });
 });
 
 ipcMain.handle("store-master-key", async (event, email, masterPassword) => {
