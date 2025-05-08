@@ -33,7 +33,7 @@ function createWindow() {
     });
 
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.setMenu(null);
 
@@ -77,24 +77,8 @@ function createWindow() {
 }
 
 // Evento para mostrar las alertas de tipo error
-ipcMain.handle("show-error-alert", async (event, data) => {
-
-    errorAlert = new BrowserWindow({
-        frame: false,
-        transparent: true,
-        alwaysOnTop: true,
-        skipTaskbar: true,
-        resizable: false,
-        focusable: false,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.mjs'),
-            contextIsolation: true,
-            nodeIntegration: false,
-        }
-    });
-    errorAlert.setIgnoreMouseEvents(true, { forward: true });
-
-    const toastWidth  = 300;
+ipcMain.handle("show-error-alert", async (_event, data) => {
+    const toastWidth  = 400;
     const toastHeight = 80;
     const margin      = 20;
 
@@ -103,16 +87,36 @@ ipcMain.handle("show-error-alert", async (event, data) => {
     const x = Math.round(workArea.x + (workArea.width  - toastWidth ) / 2);
     const y = Math.round(workArea.y + (workArea.height - toastHeight) - margin);
 
-    errorAlert.setSize(toastWidth, toastHeight);
-    errorAlert.setPosition(x, y);
-
-    errorAlert.loadFile(path.join(__dirname, 'views', 'alert', 'error.html'))
-    errorAlert.once('ready-to-show', () => {
-        errorAlert.show();
+    const errorAlert = new BrowserWindow({
+        width: toastWidth,
+        height: toastHeight,
+        x: x,
+        y: y,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        focusable: false,
+        webPreferences: {
+          preload: path.join(__dirname, "preload.mjs"),
+          contextIsolation: true,
+          enableRemoteModule: false,
+          nodeIntegration: false,
+          sandbox: false
+        }
+      });
+    errorAlert.setIgnoreMouseEvents(true, { forward: true });
+  
+    errorAlert.loadFile(path.join(__dirname, 'views', 'alert', 'error.html'));
+  
+    // Espera a que el HTML y el preload estén listos
+    errorAlert.webContents.on('did-finish-load', () => {
         errorAlert.webContents.send('show-error-message', data);
+        errorAlert.show();
         setTimeout(() => errorAlert.close(), TIMING);
-    })
-});
+      });
+  });
 
 // Evento para mostrar la modal de credenciales
 ipcMain.handle("show-credential-modal", async (event, show, data) => {
