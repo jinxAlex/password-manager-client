@@ -13,11 +13,6 @@ const btnClose = document.getElementById('close-modal');
 // Asegura selección única y genera contraseña al cambiar
 options.forEach(option => {
     option.addEventListener('change', () => {
-        if (option.checked) {
-            options.forEach(other => {
-                if (other !== option) other.checked = false;
-            });
-        }
         generatePassword();
     });
 });
@@ -71,10 +66,14 @@ function generatePassword() {
 options[0].checked = true;
 generatePassword();
 
-document.getElementById('password-form').addEventListener('click', event => {
-    event.preventDefault();
+document.getElementById('acceptPassword').addEventListener('click', event => {
+    let password = outputInput.value.trim();
+    if(isRequired && password != ""){
+        console.log(password)
+        window.api.sendMessage("generated-password", password);
+    }
     window.api.showUtilitiesModal("password", false);
-    //window.api.generatedPassword(outputInput.value.trim());
+
 });
 
 btnClose.addEventListener('click', () => {
@@ -82,6 +81,6 @@ btnClose.addEventListener('click', () => {
 });
 
 
-window.api.onGeneratePasswordToCredential((payload) => {
-    console.log("HOLA BUENAS TARDES", payload);
+window.api.onGeneratePasswordToCredential(() => {
+    isRequired = true;
 });

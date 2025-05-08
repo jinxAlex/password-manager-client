@@ -129,6 +129,7 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
                 sandbox: false
             }
         });
+        credentialModal.webContents.openDevTools();
         // Carga el HTML de la modal y espera
         await credentialModal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
 
@@ -146,7 +147,7 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
-    //utilitiesModal.webContents.openDevTools({ mode: "undocked" });
+    utilitiesModal.webContents.openDevTools({ mode: "undocked" });
     if (credentialModal != null) {
         credentialModal.hide(); 
     }else{
@@ -213,6 +214,10 @@ ipcMain.on("generate-password-to-credential", (event) => {
     utilitiesModal.webContents.on('did-finish-load', () => {
         utilitiesModal.webContents.send("generate-password-to-credential");
     });
+});
+
+ipcMain.on("generated-password", (event,data) => {
+    credentialModal.webContents.send("generated-password", data)
 });
 
 ipcMain.handle("store-master-key", async (event, email, masterPassword) => {

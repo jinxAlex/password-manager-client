@@ -27,7 +27,13 @@ contextBridge.exposeInMainWorld("api", {
   },
   generatePasswordToCredential: () => ipcRenderer.send("generate-password-to-credential"),
   onGeneratePasswordToCredential: (callback) => {
-    ipcRenderer.on("generate-password-to-credential", (event,payload) => {
+    ipcRenderer.on("generate-password-to-credential", (event) => {
+      callback();
+    });
+  },
+  generatePassword: (data) => ipcRenderer.send("generated-password",data),
+  onGeneratedPassword: (callback) => {
+    ipcRenderer.on("generated-password", (event,payload) => {
       callback(payload);
     });
   },

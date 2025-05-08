@@ -116,3 +116,7 @@ window.api.onDataSent(data => {
     }
 });
 
+window.api.onGeneratedPassword((password) => {
+    console.log(password)
+    inputPassword.value = password;
+});
