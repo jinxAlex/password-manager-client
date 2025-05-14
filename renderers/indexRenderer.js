@@ -31,11 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.parent.api.onShowOverlay(() => {
+  
   const overlay = document.getElementById("overlay");
 
   if (overlay.classList.contains("hidden")) {
+    console.log("MOSTRANDO")
     overlay.classList.remove("hidden");
   } else {
+    console.log("ESCONDIENDO")
     overlay.classList.add("hidden");
   }
   

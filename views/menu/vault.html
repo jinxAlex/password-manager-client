@@ -6,24 +6,49 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
     <link href="../css/style.css" rel="stylesheet">
 </head>
+<!-- Por trabajar visual -->
+<body class="flex-col items-center justify-center min-h-screen bg-[#202120] p-4 ">
+    <div id="dropdownContainer" class="relative inline-block group">
+        <button type="button" class="text-white bg-[#F97316] hover:bg-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center mb-4">
+            <img class="w-7 h-7 text-gray-200 transition duration-75 group-hover:text-white mr-2 "
+                src="../../resources/actions/add.webp" />
+            Agregar
+        </button>
 
-<body class="flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
-    <button type="button" id="addCredential"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-        <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            viewBox="0 0 18 21">
-            <path
-                d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
-        </svg>
-        Agregar
-    </button>
-    <div id="accordion-container" class="pt-5 w-full space-y-6"></div>
+        <div id="dropdownHover"
+            class="hidden absolute top-full left-0 mt-2 w-44 divide-y divide-gray-100 rounded-lg shadow bg-[#272726] z-10">
+            <ul class="py-2 text-sm text-gray-200">
+                <li>
+                    <a href="#" id="addCredential"
+                        class="block px-4 py-2 hover:bg-gray-600">
+                        Credencial
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="addFolder"
+                        class="block px-4 py-2 hover:bg-gray-600 dark:hover:text-white">
+                        Carpeta
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="flex w-full h-[calc(100vh-4rem)] space-x-4 ">
+        <div id="foldersContainer" class="mb-4 py-5 flex-none w-1/4 bg-[#131413] border border-gray-700 p-4 flex flex-col space-y-2 overflow-y-auto rounded-lg">
+            <button class="flex items-center justify-between p-2 bg-gray-100 hover:bg-gray-200 
+                     rounded-md text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">
+                <span>Mi Carpeta</span>
+            </button>
+        </div>
+
+        <div id="accordion-container" class="flex-1 space-y-6 overflow-y-auto">
+        </div>
+    </div>
     <template>
         <div
-            class="accordion-item p-5 bg-white dark:bg-gray-800 shadow-md rounded-lg transition-shadow hover:shadow-lg">
+            class="accordion-item p-5 bg-[#131413] shadow-md rounded-lg transition-shadow hover:shadow-lg">
             <h2 id="accordion-heading-${id}">
-                <button type="button" class="flex items-center justify-between w-full p-5 text-gray-600 dark:text-gray-300
-                               focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors gap-5"
+                <button type="button" class="flex items-center justify-between w-full p-5 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors gap-5"
                     data-accordion-target="#accordion-body-${id}" aria-expanded="false"
                     aria-controls="accordion-body-${id}">
                     <span id="entry_name"></span>
@@ -39,10 +64,10 @@
                     <!-- Username -->
                     <div class="flex items-center">
                         <span
-                            class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">Usuario</span>
+                            class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border rounded-s-lg text-white border-gray-600">Usuario</span>
                         <div class="relative w-full">
                             <input id="website-url" type="text" aria-describedby="helper-text-explanation"
-                                class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class=" border border-e-0 text-gray-400 text-sm border-s-0 block w-full p-2.5 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                                 readonly disabled />
                         </div>
                         <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url"
@@ -100,7 +125,7 @@
                         <div id="tooltip-website-url" role="tooltip"
                             class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
                             <span id="default-tooltip-message">Copy link</span>
-                            <span id="success-tooltip-message" >Copied!</span>
+                            <span id="success-tooltip-message">Copied!</span>
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
@@ -140,15 +165,13 @@
                     </div>
                     <!-- Botones Editar / Eliminar -->
                     <div class="flex justify-end gap-2 w-full">
-                        <button type="button" id="editCredential" class="px-4 py-2 bg-green-600 hover:bg-green-700 focus:ring-2 focus:outline-none 
-                                       focus:ring-green-500 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-700 
-                                       text-white font-medium rounded-lg">
+                        <button type="button" id="editCredential" class="px-4 py-2 border font-medium rounded-lg focus:ring-2 focus:outline-none border-green-500 text-green-400 hover:bg-gray-700 focus:ring-green-600">
                             Editar
                         </button>
+                        
+                        </button>
                         <button type="button" id="deleteCredential"
-                            class="px-4 py-2 border border-red-500 text-red-500 font-medium rounded-lg 
-                                       hover:bg-red-50 focus:ring-2 focus:outline-none focus:ring-red-300 
-                                       dark:border-red-500 dark:text-red-400 dark:hover:bg-red-700 dark:focus:ring-red-600">
+                            class="px-4 py-2 border font-medium rounded-lg focus:ring-2 focus:outline-none border-red-500 text-red-400 hover:bg-gray-700 focus:ring-red-600">
                             Eliminar
                         </button>
                     </div>

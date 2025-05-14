@@ -14,18 +14,18 @@ contextBridge.exposeInMainWorld("api", {
   getEmail: () => ipcRenderer.invoke("get-email"),
   decryptCredential: (salt, encryptedData) => decryptCredential(salt, encryptedData),
   encryptCredential: (data) => encryptCredential(data),
-  refreshVault: () => ipcRenderer.send("refresh-vault"),
   showUtilitiesModal: (typeModal, show) => ipcRenderer.invoke("show-utilities-modal", typeModal, show),
   showErrorModal: (data) => ipcRenderer.invoke("show-error-alert", data),
   onShowErrorMessage: (callback) => {
     ipcRenderer.on('show-error-message', (event, payload) => callback(payload));
   },
+  refreshVault: () => ipcRenderer.send("refresh-vault"),
   onRefreshVault: (callback) => {
     ipcRenderer.on("refresh-vault", (event) => {
       callback();
     });
   },
-  generatePasswordToCredential: () => ipcRenderer.send("generate-password-to-credential"),
+  //generatePasswordToCredential: () => ipcRenderer.send("generate-password-to-credential"),
   onGeneratePasswordToCredential: (callback) => {
     ipcRenderer.on("generate-password-to-credential", (event) => {
       callback();
@@ -43,8 +43,28 @@ contextBridge.exposeInMainWorld("api", {
     });
   },
   onDataSent: (callback) => {
-    ipcRenderer.on('dataSent', (event, payload) =>{ 
+    ipcRenderer.on("dataSent", (event, payload) =>{ 
       callback(payload)
+    });
+  },
+  saveFolder: (folderName) => {
+    ipcRenderer.invoke("save-folder", folderName);
+  },
+  onSaveFolder: (callback) => {
+    ipcRenderer.on('save-folder', (event, folderName) => {
+      callback(folderName);
+    });
+  },
+  sendFolders: (folderList) => {
+    console.log("Se envian las carpetas:")
+    console.log(folderList)
+    ipcRenderer.invoke('send-folders', folderList);
+  },
+  onSendFolders: (callback) => {
+    ipcRenderer.on('send-folders', (event, folderList) => {
+      console.log("Se reciben las carpetas:")
+      console.log(folderList)
+      callback(folderList);
     });
   }
 });

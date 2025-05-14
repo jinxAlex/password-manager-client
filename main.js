@@ -33,7 +33,7 @@ function createWindow() {
     });
 
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.setMenu(null);
 
@@ -147,7 +147,7 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
-    utilitiesModal.webContents.openDevTools({ mode: "undocked" });
+    
     if (credentialModal != null) {
         credentialModal.hide(); 
     }else{
@@ -162,6 +162,9 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
             case "export/import":
                 utilityFile = "export-import.html";
                 break;
+            case "folder":
+                utilityFile = "folder.html";
+                break;
             default:
                 return;
         }
@@ -170,12 +173,12 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
         utilitiesModal.center();
         utilitiesModal.show();
         utilitiesModal.moveTop();
-        utilitiesModal.focus();  
+        utilitiesModal.focus();
+        utilitiesModal.webContents.openDevTools({ mode: "undocked" });
     } else {
         utilitiesModal.hide();
         if (credentialModal != null) {
-            credentialModal.show(); 
-            mainWindow.webContents.send('show-overlay');
+            credentialModal.show();
         }
     }
 });
@@ -208,6 +211,17 @@ app.on("window-all-closed", () => {
 // Evento para refrescar las credenciales
 ipcMain.on("refresh-vault", (event) => {
     mainWindow.webContents.send("refresh-vault");
+});
+
+ipcMain.handle("save-folder", (event, data) => {+
+    mainWindow.webContents.send("save-folder", data );
+});
+
+ipcMain.handle("send-folders", (event, data) => {+
+    console.log("ENVIO")
+    credentialModal.webContents.once('did-finish-load', () => {
+        credentialModal.webContents.send("send-folders", data );
+    });
 });
 
 ipcMain.on("generate-password-to-credential", (event) => {

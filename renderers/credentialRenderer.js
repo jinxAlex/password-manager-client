@@ -3,24 +3,32 @@ import { SERVER_ADD_CREDENTIAL, SERVER_EDIT_CREDENTIAL } from '../config/config.
 const inputCredentialName = document.getElementById("inputCredential");
 const inputUsername = document.getElementById("inputUsername");
 const inputPassword = document.getElementById("inputPassword");
+const inputFolder = document.getElementById("inputFolder");
 const inputUrl = document.getElementById("inputUrl");
 const header = document.getElementById("header");
 const buttonSend = document.getElementById("sendCredential");
 const buttonGenerate = document.getElementById("generatePassword");
+const buttonClose = document.getElementById("close-modal");
+const buttonToggleVisibility = document.getElementById("toggleVisibility");
+
 
 let edit = false;
 let editId;
+
+buttonToggleVisibility.addEventListener("click", async function() {
+    
+});
 
 buttonGenerate.addEventListener("click", async function() {
     window.api.showUtilitiesModal("password", true);
     window.api.sendMessage("generate-password-to-credential");
 });
 
-document.getElementById('close-modal').addEventListener('click', () => {
+buttonClose.addEventListener('click', () => {
     window.api.showCredentialModal(false);
 });
 
-document.getElementById('sendCredential').addEventListener('click', async () => {
+buttonSend.addEventListener('click', async () => {
     let name = inputCredentialName.value.trim();
     let username = inputUsername.value.trim();
     let password = inputPassword.value.trim();
@@ -46,8 +54,6 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
 
     try {
         const { encryptedData, iv } = await window.api.encryptCredential(data);
-        console.log("Encrypted data:", encryptedData);
-        console.log("IV:", iv);
 
         const email = await window.api.getEmail();
         const authKey = await window.api.getAuthKey();
@@ -63,7 +69,7 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
                 },
                 body: JSON.stringify({
                     encryptedData: encryptedData,
-                    salt: iv
+                    iv: iv
                 }),
             });
         } else {
@@ -77,7 +83,7 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
                 body: JSON.stringify({
                     id: editId,
                     encryptedData: encryptedData,
-                    salt: iv
+                    iv: iv
                 }),
             });
         }
@@ -94,10 +100,10 @@ document.getElementById('sendCredential').addEventListener('click', async () => 
         }
         window.api.sendMessage("refresh-vault");
 
-        window.api.showModal(false);
+        window.api.showCredentialModal(false);
 
     } catch (error) {
-        console.error("Error durante el proceso:", error);
+        console.log("Error durante el proceso:", error);
         alert("Hubo un error al procesar la solicitud.");
     }
 });
@@ -107,12 +113,13 @@ window.api.onDataSent(data => {
         edit = true;
         editId = data.id;
         header.textContent = "Editar credencial";
-        button.textContent = "Editar";
+        buttonSend.textContent = "Editar";
         inputCredentialName.value = data.entry_name;
         inputUsername.value = data.username;
         inputPassword.value = data.password;
         inputUrl.value = data.url;
-        console.log(data);
+        fillFolderSelection(data.foldersList)
+        inputFolder.value = data.folder;
     }
 });
 
@@ -120,3 +127,17 @@ window.api.onGeneratedPassword((password) => {
     console.log(password)
     inputPassword.value = password;
 });
+
+window.api.onSendFolders((foldersList) => {
+    console.log("RECIBO")
+    fillFolderSelection(foldersList);
+});
+
+function fillFolderSelection(foldersList){
+    for (const folder of foldersList){
+        const opt = document.createElement('option');
+        opt.value = folder;
+        opt.text  = folder;
+        inputFolder.appendChild(opt);
+    }
+}
