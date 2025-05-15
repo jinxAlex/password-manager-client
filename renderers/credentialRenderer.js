@@ -10,13 +10,20 @@ const buttonSend = document.getElementById("sendCredential");
 const buttonGenerate = document.getElementById("generatePassword");
 const buttonClose = document.getElementById("close-modal");
 const buttonToggleVisibility = document.getElementById("toggleVisibility");
+const buttonEyeOpen = document.getElementById("eyeOpen");
+const buttonEyeClosed = document.getElementById("eyeClosed");
 
 
 let edit = false;
 let editId;
 
 buttonToggleVisibility.addEventListener("click", async function() {
+    const isPassword = inputPassword.type === "password";
+    console.log(isPassword)
+    inputPassword.type = isPassword ? "text" : "password";
     
+    buttonEyeClosed.classList.toggle("hidden", !isPassword);
+    buttonEyeOpen.classList.toggle("hidden", isPassword);
 });
 
 buttonGenerate.addEventListener("click", async function() {
