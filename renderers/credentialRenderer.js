@@ -42,12 +42,12 @@ buttonSend.addEventListener('click', async () => {
     let url = inputUrl.value.trim();
 
     if (!name || !username || !password) {
-        alert("Los campos 'Nombre', 'Usuario' y 'Contraseña' son obligatorios.");
+        window.api.showErrorModal("Los campos 'Nombre', 'Usuario' y 'Contraseña' son obligatorios.");
         return;
     }
 
     if (url && !/^https?:\/\/[\w\-]+\.[a-z]{2,6}(\/[\w\-]*)*\/?$/.test(url)) {
-        alert("La URL proporcionada no es válida.");
+        window.api.showErrorModal("La URL proporcionada no es válida.");
         return;
     }
 
@@ -101,17 +101,28 @@ buttonSend.addEventListener('click', async () => {
 
         if (!response.ok) {
             console.error("Error al agregar la credencial:", result);
-            alert("Hubo un problema al agregar la credencial.");
+            if(edit){
+                window.api.showErrorModal("Ocurrio un problema al editar la credencial.");
+            }else{
+                window.api.showErrorModal("Ocurrio un problema al agregar la credencial.");
+            }
+            
         } else {
             console.log("Credencial agregada exitosamente.");
+            if(edit){
+                window.api.showSuccessModal("Se edito la credencial exitosamente.");
+            }else{
+                window.api.showSuccessModal("Se agrego la credencial exitosamente.");
+            }
         }
         window.api.sendMessage("refresh-vault");
 
         window.api.showCredentialModal(false);
 
+
     } catch (error) {
         console.log("Error durante el proceso:", error);
-        alert("Hubo un error al procesar la solicitud.");
+        window.api.showErrorModal("Ocurrio un error al procesar la solicitud.");
     }
 });
 
@@ -131,12 +142,10 @@ window.api.onDataSent(data => {
 });
 
 window.api.onGeneratedPassword((password) => {
-    console.log(password)
     inputPassword.value = password;
 });
 
 window.api.onSendFolders((foldersList) => {
-    console.log("RECIBO")
     fillFolderSelection(foldersList);
 });
 

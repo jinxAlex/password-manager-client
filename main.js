@@ -109,6 +109,48 @@ ipcMain.handle("show-error-alert", async (_event, data) => {
     });
 });
 
+// Evento para mostrar las alertas de tipo success
+ipcMain.handle("show-success-alert", async (_event, data) => {
+    const toastWidth = 400;
+    const toastHeight = 80;
+    const margin = 20;
+
+    const { workArea } = screen.getPrimaryDisplay();
+
+    const x = Math.round(workArea.x + (workArea.width - toastWidth) / 2);
+    const y = Math.round(workArea.y + (workArea.height - toastHeight) - margin);
+
+    const successAlert = new BrowserWindow({
+        width: toastWidth,
+        height: toastHeight,
+        x: x,
+        y: y,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        focusable: false,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.mjs"),
+            contextIsolation: true,
+            enableRemoteModule: false,
+            nodeIntegration: false,
+            sandbox: false
+        }
+    });
+    successAlert.setIgnoreMouseEvents(true, { forward: true });
+
+    successAlert.loadFile(path.join(__dirname, 'views', 'alert', 'success.html'));
+
+    // Espera a que el HTML y el preload estén listos
+    successAlert.webContents.on('did-finish-load', () => {
+        successAlert.webContents.send('show-success-message', data);
+        successAlert.show();
+        setTimeout(() => successAlert.close(), TIMING);
+    });
+});
+
 // Evento para mostrar la modal de credenciales
 ipcMain.handle("show-credential-modal", async (event, show, data) => {
     mainWindow.webContents.send('show-overlay');

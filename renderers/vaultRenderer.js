@@ -144,20 +144,51 @@ function renderCredentials() {
     clone.querySelector('button#deleteCredential').addEventListener('click', async () => {
       try {
         const user = await window.parent.api.getEmail();
-        const key = await window.parent.api.getAuthKey();
-        const auth = btoa(`${user}:${key}`);
-        const res = await fetch(SERVER_DELETE_CREDENTIAL, {
+        const authKey = await window.parent.api.getAuthKey();
+        const auth = btoa(`${user}:${authKey}`);
+        const response = await fetch(SERVER_DELETE_CREDENTIAL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Basic ${auth}` },
           body: JSON.stringify({ id }),
         });
-        if (res.ok) itemNode.remove();
-        else console.error('Delete failed', res.statusText);
+        if (response.ok){
+            itemNode.remove();
+        } 
+        else{
+          window.api.showErrorModal("Ocurrio un error al intentar borrar la credencial.");
+        } 
       } catch (e) { console.error(e); }
     });
 
     clone.querySelector('button#editCredential').addEventListener('click', () => {
       window.parent.api.showCredentialModal(true, { id, edit: true, entry_name, username, password, url, folder, foldersList });
+    });
+
+    clone.querySelector('button#copyUsername').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(username);
+        window.api.showSuccessModal("Nombre de usuario copiado correctamente.");
+      } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+      }
+    });
+
+    clone.querySelector('button#copyPassword').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(password);
+        window.api.showSuccessModal("Contraseña copiada correctamente.");
+      } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+      }
+    });
+
+    clone.querySelector('button#copyUrl').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        window.api.showSuccessModal("Url copiada correctamente.");
+      } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+      }
     });
 
     credentialContainer.appendChild(clone);

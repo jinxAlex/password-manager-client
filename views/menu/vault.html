@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
@@ -26,7 +25,7 @@
                 </li>
                 <li>
                     <a href="#" id="addFolder"
-                        class="block px-4 py-2 hover:bg-gray-600 dark:hover:text-white">
+                        class="block px-4 py-2 hover:bg-gray-600 hover:text-white">
                         Carpeta
                     </a>
                 </li>
@@ -35,8 +34,7 @@
     </div>
     <div class="flex w-full h-[calc(100vh-4rem)] space-x-4 ">
         <div id="foldersContainer" class="mb-4 py-5 flex-none w-1/4 bg-[#131413] border border-gray-700 p-4 flex flex-col space-y-2 overflow-y-auto rounded-lg">
-            <button class="flex items-center justify-between p-2 bg-gray-100 hover:bg-gray-200 
-                     rounded-md text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200">
+            <button class="flex items-center justify-between p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-gray-200">
                 <span>Mi Carpeta</span>
             </button>
         </div>
@@ -59,7 +57,7 @@
                     </svg>
                 </button>
             </h2>
-            <div id="accordion-body-" class="hidden bg-gray-900 p-5" aria-labelledby="accordion-heading-">
+            <div id="accordion-body-" class="hidden bg-[#242423] p-5" aria-labelledby="accordion-heading-">
                 <div class="flex flex-col gap-4">
                     <!-- Username -->
                     <div class="flex items-center">
@@ -67,101 +65,43 @@
                             class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border rounded-s-lg text-white border-gray-600">Usuario</span>
                         <div class="relative w-full">
                             <input id="website-url" type="text" aria-describedby="helper-text-explanation"
-                                class=" border border-e-0 text-gray-400 text-sm border-s-0 block w-full p-2.5 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                readonly disabled />
+                                class=" border border-e-0 text-gray-400 text-sm border-s-0 block w-full p-2.5 border-gray-600 placeholder-gray-400" readonly disabled />
                         </div>
-                        <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url"
-                            class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700"
-                            type="button">
+                        <button class="shrink-0 z-10 inline-flex items-center py-3 px-4 bg-[#F97316] border border-[#F97316] hover:bg-[#EA580C] hover:border-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-300 rounded-e-lg shadow-md transition-colors"
+                            type="button" id="copyUsername">
                             <span id="default-icon">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 18 20">
-                                    <path
-                                        d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                                </svg>
+                                <img src="../../resources/actions/clipboard.webp" class="w-5 h-5">
                             </span>
-                            <span id="success-icon" class="hidden">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
-                                </svg>
-                            </span>
-                        </button>
-                        <div id="tooltip-website-url" role="tooltip"
-                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                            <span id="default-tooltip-message">Copy link</span>
-                            <span id="success-tooltip-message" class="hidden">Copied!</span>
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
                     </div>
                     <!-- Password -->
                     <div class="flex items-center">
-                        <span
-                            class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">Contraseña</span>
+                        <span class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-white border rounded-s-lg border-gray-600">Contraseña</span>
                         <div class="relative w-full">
                             <input id="website-url" type="password" aria-describedby="helper-text-explanation"
-                                class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class=" border border-e-0 border-gray-600 text-gray-400 text-sm border-s-0 block w-full p-2.5 placeholder-gray-400"
                                 readonly disabled />
                         </div>
-                        <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url"
-                            class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700"
-                            type="button">
+                        <button  class="shrink-0 z-10 inline-flex items-center py-3 px-4 bg-[#F97316] border border-[#F97316] hover:bg-[#EA580C] hover:border-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-300 rounded-e-lg shadow-md transition-colors"
+                            type="button" id="copyPassword">
                             <span id="default-icon">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 18 20">
-                                    <path
-                                        d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                                </svg>
-                            </span>
-                            <span id="success-icon" class="hidden">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
-                                </svg>
+                                <img src="../../resources/actions/clipboard.webp" class="w-4 h-4  object-contain">
                             </span>
                         </button>
-                        <div id="tooltip-website-url" role="tooltip"
-                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                            <span id="default-tooltip-message">Copy link</span>
-                            <span id="success-tooltip-message">Copied!</span>
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
                     </div>
                     <!-- URL -->
-                    <div class="flex items-center text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center text-gray-400">
                         <span
-                            class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900  border border-gray-300 rounded-s-lg dark:text-white dark:border-gray-600">URL</span>
+                            class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border border-gray-600 rounded-s-lg text-white ">URL</span>
                         <div class="relative w-full">
                             <input id="website-url" type="text" aria-describedby="helper-text-explanation"
-                                class=" border border-e-0 border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                value="https://flowbite.com" readonly disabled />
+                                class=" border border-e-0 border-gray-600 text-gray-400 text-sm border-s-0 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  placeholder-gray-400" readonly disabled />
                         </div>
-                        <button data-tooltip-target="tooltip-website-url" data-copy-to-clipboard-target="website-url"
-                            class="shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-white bg-blue-700 rounded-e-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 border border-blue-700 dark:border-blue-600 hover:border-blue-800 dark:hover:border-blue-700"
-                            type="button">
+                        <button class="shrink-0 z-10 inline-flex items-center py-3 px-4 bg-[#F97316] border border-[#F97316] hover:bg-[#EA580C] hover:border-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-300 rounded-e-lg shadow-md transition-colors"
+                            type="button" id="copyUrl">
                             <span id="default-icon">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 18 20">
-                                    <path
-                                        d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                                </svg>
-                            </span>
-                            <span id="success-icon" class="hidden">
-                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
-                                </svg>
+                                <img src="../../resources/actions/random.webp" class="w-4 h-4">
                             </span>
                         </button>
-                        <div id="tooltip-website-url" role="tooltip"
-                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                            <span id="default-tooltip-message">Copy link</span>
-                            <span id="success-tooltip-message" class="hidden">Copied!</span>
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
                     </div>
                     <!-- Botones Editar / Eliminar -->
                     <div class="flex justify-end gap-2 w-full">
