@@ -219,15 +219,31 @@ buttonContainer.addEventListener('mouseenter', () => {
 
 buttonContainer.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => dropdown.classList.add('hidden'), 100); });
 
-document.getElementById('addCredential').addEventListener('click', () => { 
+function addCredential(){
   dropdown.classList.add('hidden'); 
   window.parent.api.showCredentialModal(true, { edit: false }); 
   window.parent.api.sendFolders(foldersList);
+}
+
+document.getElementById('addCredential').addEventListener('click', () => { 
+  addCredential();
 });
 
-document.getElementById('addFolder').addEventListener('click', () => { 
+function addFolder(){
   dropdown.classList.add('hidden'); 
   window.parent.api.showUtilitiesModal('folder', true); 
+}
+
+document.getElementById('addFolder').addEventListener('click', () => { 
+  addFolder();
+});
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'F1') {
+    addFolder();
+  }else  if (event.key === 'F2') {
+    addCredential();
+  }
 });
 
 window.parent.api.onRefreshVault(() => getCredentials());

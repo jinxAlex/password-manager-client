@@ -67,6 +67,10 @@ function createWindow() {
 
 }
 
+function isWindowAlive(win) {
+    return win && !win.isDestroyed();
+}
+
 // Evento para mostrar las alertas de tipo error
 ipcMain.handle("show-error-alert", async (_event, data) => {
     const toastWidth = 400;
@@ -155,6 +159,12 @@ ipcMain.handle("show-success-alert", async (_event, data) => {
 ipcMain.handle("show-credential-modal", async (event, show, data) => {
     mainWindow.webContents.send('show-overlay');
     if (show) {
+
+        if (isWindowAlive(credentialModal)) {
+            credentialModal.destroy();
+            credentialModal = null;
+        }
+
         credentialModal = new BrowserWindow({
             parent: mainWindow,
             modal: true,
@@ -183,19 +193,41 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
         credentialModal.show();
 
     } else {
-        credentialModal.destroy();
+        if (isWindowAlive(credentialModal)) {
+            credentialModal.destroy();
+            credentialModal = null;
+        }
     }
 });
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
-    
-    if (credentialModal != null) {
-        credentialModal.hide(); 
-    }else{
+
+    if (isWindowAlive(credentialModal)) {
+        credentialModal.hide();
+    } else {
         mainWindow.webContents.send('show-overlay');
     }
     if (show) {
+        if (!isWindowAlive(utilitiesModal)) {
+            utilitiesModal = new BrowserWindow({
+                parent: mainWindow,
+                modal: true,
+                frame: false,
+                transparent: true,
+                backgroundColor: '#00000000',
+                show: false,
+                resizable: false,
+                webPreferences: {
+                    preload: path.join(__dirname, "preload.mjs"),
+                    contextIsolation: true,
+                    enableRemoteModule: false,
+                    nodeIntegration: false,
+                    sandbox: false
+                }
+            });
+        }
+
         let utilityFile;
         switch (typeModal) {
             case "password":
@@ -218,8 +250,11 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
         utilitiesModal.focus();
         utilitiesModal.webContents.openDevTools({ mode: "undocked" });
     } else {
-        utilitiesModal.hide();
-        if (credentialModal != null) {
+        if (isWindowAlive(utilitiesModal)) {
+            utilitiesModal.hide();
+        }
+        
+        if (isWindowAlive(credentialModal)) {
             credentialModal.show();
         }
     }
@@ -255,14 +290,14 @@ ipcMain.on("refresh-vault", (event) => {
     mainWindow.webContents.send("refresh-vault");
 });
 
-ipcMain.handle("save-folder", (event, data) => {+
-    mainWindow.webContents.send("save-folder", data );
+ipcMain.handle("save-folder", (event, data) => {
+    +
+        mainWindow.webContents.send("save-folder", data);
 });
 
-ipcMain.handle("send-folders", (event, data) => {+
-    console.log("ENVIO")
+ipcMain.handle("send-folders", (event, data) => {
     credentialModal.webContents.once('did-finish-load', () => {
-        credentialModal.webContents.send("send-folders", data );
+        credentialModal.webContents.send("send-folders", data);
     });
 });
 
@@ -272,7 +307,7 @@ ipcMain.on("generate-password-to-credential", (event) => {
     });
 });
 
-ipcMain.on("generated-password", (event,data) => {
+ipcMain.on("generated-password", (event, data) => {
     credentialModal.webContents.send("generated-password", data)
 });
 
