@@ -239,9 +239,9 @@ document.getElementById('addFolder').addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', function (event) {
-  if (event.key === 'F1') {
+  if (event.key === 'F2') {
     addFolder();
-  }else  if (event.key === 'F2') {
+  }else  if (event.key === 'F3') {
     addCredential();
   }
 });
@@ -252,6 +252,10 @@ window.parent.api.onSaveFolder((folderName) => {
   console.log(folderName);
   foldersList.push(folderName);
   buildFolderButtons();
+});
+
+window.parent.api.onObtainAllCredentials(() => {
+  window.parent.api.exportCredentials(credentialList);
 });
 
 getCredentials();

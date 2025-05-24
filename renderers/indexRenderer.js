@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btnHerramientas");
   const menu = document.getElementById("dropdown");
   const generatePassword = document.getElementById("generatePassword");
+  const exportOrimport = document.getElementById("export/import");
 
   document.querySelectorAll('a[target="content"]').forEach(link => {
     link.addEventListener("click", event => {
@@ -27,6 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   generatePassword.addEventListener("click", function() {
     window.api.showUtilitiesModal("password", true);
+  });
+
+  exportOrimport.addEventListener("click", function() {
+    window.api.showUtilitiesModal("export/import", true);
   });
 });
 

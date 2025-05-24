@@ -1,6 +1,7 @@
 
 import { contextBridge, ipcRenderer} from "electron";
 import { generateMasterKey, encryptCredential, decryptCredential } from "./scripts/crypto.js";
+import fs from 'fs';
 
 contextBridge.exposeInMainWorld("api", {
   generateMasterKey: (email, masterKey) => generateMasterKey(email, masterKey),
@@ -70,5 +71,40 @@ contextBridge.exposeInMainWorld("api", {
       console.log(folderList)
       callback(folderList);
     });
+  },
+  obtainAllCredentials: async () => {
+    ipcRenderer.invoke('obtain-credentials');
+  },
+  onObtainAllCredentials: (callback) => {
+    ipcRenderer.on('obtain-credentials', (event) => {
+      callback();
+    });
+  },
+  exportCredentials: async (credentialList) => {
+    ipcRenderer.invoke('export-credentials', credentialList);
+  },
+  onExportCredentials: (callback) => {
+    ipcRenderer.on('export-credentials', (event, credentialList) => {
+      console.log("Se reciben las credenciales:")
+      console.log(credentialList)
+      callback(credentialList);
+    });
+  },
+  importJSON: async () => {
+    const filePath = await ipcRenderer.invoke('show-open-dialog')
+    if (!filePath) return null
+    const data = fs.readFileSync(filePath, 'utf-8')
+    try {
+      return JSON.parse(data)
+    } catch (e) {
+      console.error('JSON inválido:', e)
+      return null
+    }
+  },
+  exportJSON: async (payload) => {
+    const filePath = await ipcRenderer.invoke('show-save-dialog')
+    if (!filePath) return false
+    fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf-8')
+    return true
   }
 });

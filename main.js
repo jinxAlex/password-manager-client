@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserView, ipcMain, screen } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, screen } from "electron";
 import keytar from "keytar";
 import path from "path";
 import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL, TIMING } from "./config/config.js";
@@ -253,7 +253,7 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
         if (isWindowAlive(utilitiesModal)) {
             utilitiesModal.hide();
         }
-        
+
         if (isWindowAlive(credentialModal)) {
             credentialModal.show();
         }
@@ -285,14 +285,43 @@ app.on("window-all-closed", () => {
     }
 });
 
+ipcMain.handle('show-open-dialog', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        title: 'Seleccionar archivo JSON',
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+        properties: ['openFile']
+    })
+    if (canceled) return null
+    return filePaths[0]
+})
+
+ipcMain.handle('show-save-dialog', async () => {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Guardar archivo JSON',
+        defaultPath: 'credenciales.json',
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+    })
+    if (canceled) return null
+    return filePath
+})
+
+ipcMain.handle("obtain-credentials", async (event) => {
+    console.log("Se ha solicitado la obtención de las credenciales");
+    mainWindow.webContents.send("obtain-credentials");
+});
+
+ipcMain.handle("export-credentials", async (event, credentialList) => {
+    console.log("Se ha solicitado la exportación de las credenciales");
+    utilitiesModal.webContents.send("export-credentials",credentialList);
+});
+
 // Evento para refrescar las credenciales
 ipcMain.on("refresh-vault", (event) => {
     mainWindow.webContents.send("refresh-vault");
 });
 
 ipcMain.handle("save-folder", (event, data) => {
-    +
-        mainWindow.webContents.send("save-folder", data);
+    mainWindow.webContents.send("save-folder", data);
 });
 
 ipcMain.handle("send-folders", (event, data) => {
