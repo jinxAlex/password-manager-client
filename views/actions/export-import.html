@@ -3,7 +3,13 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
+    <meta http-equiv="Content-Security-Policy" content="
+          default-src 'self';
+          style-src   'self' https://rsms.me;
+          font-src    'self' https://rsms.me;
+          connect-src 'self' http://localhost:8080;
+        ">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <link href="../css/style.css" rel="stylesheet">
 </head>
 
@@ -17,10 +23,8 @@
             <h2 id="header" class="text-2xl font-semibold text-gray-100">Gestión de credenciales</h2>
             <button type="button" id="close-modal"
                 class="p-2 rounded-full bg-gray-700 bg-opacity-60 hover:bg-gray-600 focus:outline-none focus:ring-accentOrange/50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-200 transform rotate-45" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <img class="w-7 h-7 text-gray-200 transition duration-75 group-hover:text-white transform rotate-45"
+                    src="../../resources/actions/add.webp">
             </button>
         </div>
 
@@ -33,6 +37,7 @@
                     <label for="importOption"
                         class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#151516] peer-checked:text-gray-300">
                         <div>
+                            <img src="../../resources/actions/import.webp" width="50" height="50">
                             <div class="w-full text-lg font-semibold">Importar</div>
                             <div class="w-full text-sm">Importa credenciales de un JSON</div>
                         </div>
@@ -40,16 +45,11 @@
                 </li>
 
                 <li class="h-full">
-                    <input type="radio" id="exportOption" name="actionType" value="export"
-                        class="hidden peer" />
+                    <input type="radio" id="exportOption" name="actionType" value="export" class="hidden peer" />
                     <label for="exportOption"
                         class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#151516] peer-checked:text-gray-300">
                         <div>
-                            <svg class="mb-2 text-green-400 w-7 h-7" fill="currentColor" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                <path
-                                    d="M356.9 64.3H280l-56 88.6-48-88.6H0L224 448 448 64.3h-91.1zm-301.2 32h53.8L224 294.5 338.4 96.3h53.8L224 384.5 55.7 96.3z" />
-                            </svg>
+                            <img src="../../resources/actions/export.webp" width="50" height="50">
                             <div class="w-full text-lg font-semibold">Exportar</div>
                             <div class="w-full text-sm">Exporta tus credenciales a un JSON.</div>
                         </div>
@@ -72,6 +72,7 @@
                                     d="M418.2 177.2c-5.4-1.8-10.8-3.5-16.2-5.1.9-3.7 1.7-7.4 2.5-11.1 12.3-59.6 4.2-107.5-23.1-123.3-26.3-15.1-69.2.6-112.6 38.4-4.3 3.7-8.5 7.6-12.5 11.5-2.7-2.6-5.5-5.2-8.3-7.7-45.5-40.4-91.1-57.4-118.4-41.5-26.2 15.2-34 60.3-23 116.7 1.1 5.6 2.3 11.1 3.7 16.7-6.4 1.8-12.7 3.8-18.6 5.9C38.3 196.2 0 225.4 0 255.6c0 31.2 40.8 62.5 96.3 81.5 4.5 1.5 9 3 13.6 4.3-1.5 6-2.8 11.9-4 18-10.5 55.5-2.3 99.5 23.9 114.6 27 15.6 72.4-.4 116.6-39.1 3.5-3.1 7-6.3 10.5-9.7 4.4 4.3 9 8.4 13.6 12.4 42.8 36.8 85.1 51.7 111.2 36.6 27-15.6 35.8-62.9 24.4-120.5-.9-4.4-1.9-8.9-3-13.5 3.2-.9 6.3-1.9 9.4-2.9 57.7-19.1 99.5-50 99.5-81.7 0-30.3-39.4-59.7-93.8-78.4z" />
                             </svg>
                             <div class="w-full text-lg font-semibold">Si</div>
+                            <div class="w-full text-sm">Se borraran todas las credenciales de tu cuenta.</div>
                         </div>
                     </label>
                 </li>
@@ -81,12 +82,8 @@
                     <label for="noOption"
                         class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#151516] peer-checked:text-gray-300">
                         <div>
-                            <svg class="mb-2 text-green-400 w-7 h-7" fill="currentColor" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                <path
-                                    d="M356.9 64.3H280l-56 88.6-48-88.6H0L224 448 448 64.3h-91.1zm-301.2 32h53.8L224 294.5 338.4 96.3h53.8L224 384.5 55.7 96.3z" />
-                            </svg>
                             <div class="w-full text-lg font-semibold">No</div>
+                            <div class="w-full text-sm">No se borraran las credenciales existentes de tu cuenta.</div>
                         </div>
                     </label>
                 </li>

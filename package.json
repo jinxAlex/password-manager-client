@@ -19,6 +19,7 @@
     "tailwindcss": "^4.0.14"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
     "crypto-js": "^4.2.0",
     "electron-store": "^10.0.1",
     "keytar": "^7.9.0"

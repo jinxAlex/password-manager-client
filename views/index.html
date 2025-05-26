@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
+    <meta http-equiv="Content-Security-Policy" content="
+          default-src 'self';
+          style-src   'self' https://rsms.me;
+          font-src    'self' https://rsms.me;
+          connect-src 'self' http://localhost:8080;
+        ">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <link href="./css/style.css" rel="stylesheet">
 </head>
 
@@ -25,9 +31,10 @@
                     </a>
                 </li>
                 <li>
-                    <button type="button" id="btnHerramientas" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                    <button type="button" id="btnHerramientas"
+                        class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                        <img src="../resources/menu/tool.webp" class="w-8 h-8" >
+                        <img src="../resources/menu/tool.webp" class="w-8 h-8">
                         <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Herramientas</span>
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 10 6">
@@ -51,10 +58,11 @@
                 </li>
             </ul>
         </div>
-         <div class="absolute bottom-4 left-0 w-full px-4">
+        <div class="absolute bottom-4 left-0 w-full px-4">
             <ul class="space-y-50 font-medium">
                 <li>
-                    <a href="#" target="content" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <a href="#" target="content"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <img src="../resources/menu/help.webp" class="w-8 h-8" />
                         <span class="ms-3">Ayuda</span>
                     </a>

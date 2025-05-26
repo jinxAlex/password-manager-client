@@ -3,32 +3,83 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:8080">
+    <meta http-equiv="Content-Security-Policy" content="
+          default-src 'self';
+          style-src   'self' https://rsms.me;
+          font-src    'self' https://rsms.me;
+          connect-src 'self' http://localhost:8080;
+        ">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <div 
-        class="w-full max-w-[800px] h-full max-h-[600px] bg-[#202021] rounded-2xl shadow-xl overflow-auto flex flex-col">
+  <main class="w-full max-w-[800px] h-full max-h-[800px] bg-[#202021] rounded-2xl shadow-xl overflow-auto flex flex-col mx-auto mt-8">
+    
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+      <h1 id="header" class="text-2xl font-bold text-gray-100">👋 ¡Te damos la bienvenida a BlackVault!</h1>
+      <button
+        type="button"
+        id="close-modal"
+        class="p-2 rounded-full bg-gray-700 bg-opacity-60 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-accentOrange"
+        aria-label="Cerrar">
+        <img
+          class="w-6 h-6 rotate-45"
+          src="../resources/actions/add.webp"
+          alt="Cerrar">
+      </button>
+    </header>
 
-        <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
-            <h2 id="header" class="text-xl font-semibold text-gray-100">👋 ¡Te damos la bienvenida a BlackVault!</h2>
-            <button type="button" id="close-modal"
-                class="bg-opacity-60 bg-gray-700 bg-opacity-60 p-2 rounded-full focus:outline-none focus:ring-accentOrange/50 focus:border-accentOrange hover:bg-gray-600">
-                <img class="w-7 h-7 text-gray-200 transition duration-75 group-hover:text-white transform rotate-45"
-                    src="../resources/actions/add.webp">
-            </button>
-        </div>
+    <!-- Intro -->
+    <section class="p-6 space-y-4">
+      <p class="text-gray-300 leading-relaxed">
+        BlackVault es tu gestor de credenciales seguro. Guarda, organiza y accede a tus contraseñas de forma fiable y con cifrado de extremo a extremo.
+      </p>
+      <a href="/manual-usuario.html" class="center px-4 py-2 text-gray-400 font-medium rounded-lg transition">
+        📖 Ver Manual de Usuario
+      </a>
+    </section>
 
-        <div class="mb-6">
-            <p class="text-gray-300 leading-relaxed">
-                BlackVault es tu gestor de credenciales seguro. Guarda, organiza y accede a tus contraseñas de forma
-                confiable. Todo cifrado de extremo a extremo, bajo tu control. </p>
-        </div>
+    <section class="px-6 py-8 flex flex-col gap-6 border-t border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-100">Características clave</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <li class="flex items-start gap-4">
+          <img src="../resources/menu/lock.webp" class="w-6 h-6 mt-1">
+          <p class="text-gray-300">
+            <strong>Cifrado de extremo a extremo:</strong> tus datos sólo los puedes descifrar tú.
+          </p>
+        </li>
+        <li class="flex items-start gap-4">
+          <img src="../resources/menu/folder.webp"class="w-6 h-6 mt-1">
+          <p class="text-gray-300">
+            <strong>Organización intuitiva:</strong> credenciales organizadas por carpetas para encontrar lo que necesitas al instante.
+          </p>
+        </li>
+        <li class="flex items-start gap-4">
+          <img src="../resources/actions/random.webp"class="w-6 h-6 mt-1">
+          <p class="text-gray-300">
+            <strong>Sincronización:</strong> accede a tu vault desde cualquier dispositivo.
+          </p>
+        </li>
+        <li class="flex items-start gap-4">
+          <img src="../resources/menu/backup.webp" class="w-6 h-6 mt-1">
+          <p class="text-gray-300">
+            <strong>Copias automáticas:</strong> nunca pierdas tus contraseñas.
+          </p>
+        </li>
+      </ul>
+    </section>
 
-    </div>
-    <script type="module" src="../../renderers/welcomeRenderer.js"></script>
+    <!-- Footer -->
+    <footer class="mt-auto px-6 py-4 border-t border-gray-700 text-sm text-gray-500">
+      © 2025 BlackVault. Todos los derechos reservados.
+    </footer>
+
+  </main>
+
+  <script type="module" src="../../renderers/welcomeRenderer.js"></script>
 </body>
+
 
 </html>
