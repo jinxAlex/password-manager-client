@@ -4,6 +4,9 @@ import path from "path";
 import { SERVICE_MASTER_KEY, SERVICE_AUTH_KEY, SERVICE_EMAIL, TIMING } from "./config/config.js";
 import Store from "electron-store";
 import { fileURLToPath } from "url";
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -286,13 +289,62 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.handle('show-open-dialog', async () => {
+    console.log('[show-open-dialog] Abriendo diálogo para seleccionar archivo JSON');
     const { canceled, filePaths } = await dialog.showOpenDialog({
         title: 'Seleccionar archivo JSON',
         filters: [{ name: 'JSON', extensions: ['json'] }],
         properties: ['openFile']
-    })
-    if (canceled) return null
-    return filePaths[0]
+    });
+    if (canceled) {
+        console.log('[show-open-dialog] Selección cancelada por el usuario');
+        return null;
+    }
+    const rawDataPath = filePaths[0];
+    console.log('[show-open-dialog] Archivo seleccionado:', rawDataPath);
+
+    let rawData;
+    try {
+        rawData = fs.readFileSync(rawDataPath, 'utf-8');
+        console.log('[show-open-dialog] Contenido leído correctamente');
+    } catch (err) {
+        console.error('[show-open-dialog] Error leyendo el archivo:', err);
+        return null;
+    }
+
+    let data;
+    try {
+        data = JSON.parse(rawData);
+        console.log('[show-open-dialog] JSON parseado correctamente');
+    } catch (err) {
+        console.error('[show-open-dialog] Error parseando el JSON:', err);
+        return null;
+    }
+
+    const schemaPath = path.resolve(__dirname, './config/credentialSchema.json');
+    let schemaText, schema;
+    try {
+        schemaText = fs.readFileSync(schemaPath, 'utf-8');
+        schema = JSON.parse(schemaText);
+        console.log('[show-open-dialog] Esquema cargado:', schemaPath);
+    } catch (err) {
+        console.error('[show-open-dialog] Error cargando el esquema:', err);
+        return null;
+    }
+
+    const ajv = new Ajv({
+        allErrors: true,
+        removeAdditional: 'failing',
+        strict: false
+    });
+    addFormats(ajv);
+    const validate = ajv.compile(schema);
+    const valid = validate(data);
+    if (!valid) {
+        console.error('[show-open-dialog] Errores de validación:', validate.errors);
+        return null;
+    }
+    console.log('[show-open-dialog] Validación exitosa');
+    return data;
 })
 
 ipcMain.handle('show-save-dialog', async () => {

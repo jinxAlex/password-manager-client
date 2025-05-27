@@ -1,4 +1,4 @@
-import { SERVER_DELETE_CREDENTIAL } from '../config/config.js';
+import { SERVER_DELETE_CREDENTIAL, SERVER_ADD_CREDENTIAL } from '../config/config.js';
 
 const actionRadios = document.querySelectorAll('input[name="actionType"]');
 const confirmRadios = document.querySelectorAll('input[name="confirmationType"]');
@@ -19,13 +19,66 @@ function getSelectedValue(groupName) {
   return checked ? checked.value : null;
 }
 
+async function addCredential(credential) {
+  const {
+    entry_name,
+    username,
+    password,
+    url,
+    folder
+  } = credential;
+
+  const data = JSON.stringify({
+    "entry_name": entry_name,
+    "username": username,
+    "password": password,
+    "url": url,
+    "folder": folder
+  });
+
+  const { encryptedData, iv } = await window.api.encryptCredential(data);
+  const email = await window.api.getEmail();
+  const authKey = await window.api.getAuthKey();
+
+  const basicAuth = btoa(`${email}:${authKey}`);
+
+  fetch(SERVER_ADD_CREDENTIAL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Basic ${basicAuth}`,
+    },
+    body: JSON.stringify({
+      encryptedData: encryptedData,
+      iv: iv
+    }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error al agregar la credencial");
+      }
+    })
+    .then(data => {
+      window.api.showSuccessModal("Credencial agregada correctamente.");
+      window.api.refreshVault();
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      window.api.showErrorModal("Ocurrio un problema al agregar la credencial.");
+    });
+}
+
 async function importCredentials() {
-  const items = await window.api.importJSON()
-  if (items) {
-    window.api.showSuccessModal("Ocurrio un problema al eliminar las credenciales.");
-  } else {
-    window.api.showErrorModal("No se pudo importar las credenciales");
+  const credentialList = await window.api.importJSON()
+  if (!credentialList) {
+    window.api.showErrorModal("No se pudo importar el archivo JSON. Asegurese de que sea un archivo valido.");
+    return;
   }
+
+  for (const credential of credentialList) {
+    addCredential(credential);
+  }
+  checkToDeleteCredentials()
 }
 
 async function deleteCredentials() {

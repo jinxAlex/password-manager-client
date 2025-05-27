@@ -56,7 +56,7 @@ buttonSend.addEventListener('click', async () => {
         "username": username,
         "password": password,
         "url": url,
-        "folder": "test"
+        "folder": inputFolder.value
     });
 
     try {

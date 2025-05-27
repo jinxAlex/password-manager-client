@@ -1,5 +1,4 @@
-
-import { contextBridge, ipcRenderer} from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { generateMasterKey, encryptCredential, decryptCredential } from "./scripts/crypto.js";
 import fs from 'fs';
 
@@ -36,9 +35,9 @@ contextBridge.exposeInMainWorld("api", {
       callback();
     });
   },
-  generatePassword: (data) => ipcRenderer.send("generated-password",data),
+  generatePassword: (data) => ipcRenderer.send("generated-password", data),
   onGeneratedPassword: (callback) => {
-    ipcRenderer.on("generated-password", (event,payload) => {
+    ipcRenderer.on("generated-password", (event, payload) => {
       callback(payload);
     });
   },
@@ -48,7 +47,7 @@ contextBridge.exposeInMainWorld("api", {
     });
   },
   onDataSent: (callback) => {
-    ipcRenderer.on("dataSent", (event, payload) =>{ 
+    ipcRenderer.on("dataSent", (event, payload) => {
       callback(payload)
     });
   },
@@ -91,15 +90,8 @@ contextBridge.exposeInMainWorld("api", {
     });
   },
   importJSON: async () => {
-    const filePath = await ipcRenderer.invoke('show-open-dialog')
-    if (!filePath) return null
-    const data = fs.readFileSync(filePath, 'utf-8')
-    try {
-      return JSON.parse(data)
-    } catch (e) {
-      console.error('JSON inválido:', e)
-      return null
-    }
+    const data = await ipcRenderer.invoke('show-open-dialog');
+    return data;
   },
   exportJSON: async (payload) => {
     const filePath = await ipcRenderer.invoke('show-save-dialog')
