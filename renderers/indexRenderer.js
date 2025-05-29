@@ -22,8 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
-  btn.addEventListener("click", function() {  // Alterna la visibilidad
+  btn.addEventListener("click", function() {
     menu.classList.toggle("hidden");
+    if (!menu.classList.contains("hidden")) {
+      document.getElementById("svg").classList.add("rotate-180");
+    }else{
+      document.getElementById("svg").classList.remove("rotate-180");
+    }
   });
 
   generatePassword.addEventListener("click", function() {
@@ -40,10 +45,8 @@ window.parent.api.onShowOverlay(() => {
   const overlay = document.getElementById("overlay");
 
   if (overlay.classList.contains("hidden")) {
-    console.log("MOSTRANDO")
     overlay.classList.remove("hidden");
   } else {
-    console.log("ESCONDIENDO")
     overlay.classList.add("hidden");
   }
   
