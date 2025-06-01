@@ -17,16 +17,16 @@ const buttonEyeClosed = document.getElementById("eyeClosed");
 let edit = false;
 let editId;
 
-buttonToggleVisibility.addEventListener("click", async function() {
+buttonToggleVisibility.addEventListener("click", async function () {
     const isPassword = inputPassword.type === "password";
     console.log(isPassword)
     inputPassword.type = isPassword ? "text" : "password";
-    
+
     buttonEyeClosed.classList.toggle("hidden", !isPassword);
     buttonEyeOpen.classList.toggle("hidden", isPassword);
 });
 
-buttonGenerate.addEventListener("click", async function() {
+buttonGenerate.addEventListener("click", async function () {
     window.api.showUtilitiesModal("password", true);
     window.api.sendMessage("generate-password-to-credential");
 });
@@ -46,10 +46,15 @@ buttonSend.addEventListener('click', async () => {
         return;
     }
 
-    if (url && !/^https?:\/\/[\w\-]+\.[a-z]{2,6}(\/[\w\-]*)*\/?$/.test(url)) {
-        window.api.showErrorModal("La URL proporcionada no es válida.");
-        return;
+    if (url != "") {
+        try {
+            new URL(url);
+        } catch (e) {
+            window.api.showErrorModal("La URL proporcionada no es válida.");
+            return;
+        }
     }
+
 
     const data = JSON.stringify({
         "entry_name": name,
@@ -58,7 +63,7 @@ buttonSend.addEventListener('click', async () => {
         "url": url,
         "folder": inputFolder.value
     });
-
+    window.api.showLoadingWindow(true);
     try {
         const { encryptedData, iv } = await window.api.encryptCredential(data);
 
@@ -101,17 +106,17 @@ buttonSend.addEventListener('click', async () => {
 
         if (!response.ok) {
             console.error("Error al agregar la credencial:", result);
-            if(edit){
+            if (edit) {
                 window.api.showErrorModal("Ocurrio un problema al editar la credencial.");
-            }else{
+            } else {
                 window.api.showErrorModal("Ocurrio un problema al agregar la credencial.");
             }
-            
+
         } else {
             console.log("Credencial agregada exitosamente.");
-            if(edit){
+            if (edit) {
                 window.api.showSuccessModal("Se edito la credencial exitosamente.");
-            }else{
+            } else {
                 window.api.showSuccessModal("Se agrego la credencial exitosamente.");
             }
         }
@@ -124,6 +129,7 @@ buttonSend.addEventListener('click', async () => {
         console.log("Error durante el proceso:", error);
         window.api.showErrorModal("Ocurrio un error al procesar la solicitud.");
     }
+    window.api.showLoadingWindow(false);
 });
 
 window.api.onDataSent(data => {
@@ -149,11 +155,11 @@ window.api.onSendFolders((foldersList) => {
     fillFolderSelection(foldersList);
 });
 
-function fillFolderSelection(foldersList){
-    for (const folder of foldersList){
+function fillFolderSelection(foldersList) {
+    for (const folder of foldersList) {
         const opt = document.createElement('option');
         opt.value = folder;
-        opt.text  = folder;
+        opt.text = folder;
         inputFolder.appendChild(opt);
     }
 }

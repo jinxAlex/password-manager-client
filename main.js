@@ -1,3 +1,19 @@
+/**
+ * @file main.js
+ * @description Aplicación principal de Electron para BlackVault. Maneja la creación de ventanas, la gestión de eventos IPC y la interacción con el sistema de almacenamiento seguro.
+ * @module main
+ * @requires config/config.js
+ * @requires electron
+ * @requires keytar
+ * @requires electron-store
+ * @requires electron-ipc
+ * @requires electron-url
+ * @requires electron-ajv
+ * @requires electron-ajv-formats
+ * @requires electron-fs
+ * @requires electron-path
+ */
+
 import { app, BrowserWindow, dialog, ipcMain, screen } from "electron";
 import keytar from "keytar";
 import path from "path";
@@ -14,16 +30,21 @@ const __dirname = path.dirname(__filename);
 const store = new Store();
 
 // Variables para las modales y la ventana principal
-let mainWindow, credentialModal, utilitiesModal;
+let mainWindow, credentialModal, utilitiesModal, loadingWindow;
 
-// Crea la ventana principal
+/**
+ * Crea la ventana principal de la aplicación.
+ * Esta ventana se utiliza para mostrar la interfaz de usuario principal.
+ * @memberof module:main
+ * 
+ */
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 800,
         minWidth: 400,
         minHeight: 300,
-        icon: path.join(__dirname, "resources/safe-box.ico"),
+        icon: path.join(__dirname, "resources/vault.ico"),
         title: "BlackVault",
         show: false,
         webPreferences: {
@@ -36,7 +57,6 @@ function createWindow() {
     });
 
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
-    mainWindow.webContents.openDevTools();
 
     mainWindow.setMenu(null);
 
@@ -70,6 +90,12 @@ function createWindow() {
 
 }
 
+/**
+ * Función para verificar si una ventana está viva.
+ * @memberof module:main
+ * @param {BrowserWindow} win - La ventana a verificar.
+ * @returns {boolean} Retorna true si la ventana está viva, false si está destruida.
+ */
 function isWindowAlive(win) {
     return win && !win.isDestroyed();
 }
@@ -77,7 +103,7 @@ function isWindowAlive(win) {
 // Evento para mostrar las alertas de tipo error
 ipcMain.handle("show-error-alert", async (_event, data) => {
     const toastWidth = 400;
-    const toastHeight = 80;
+    const toastHeight = 100;
     const margin = 20;
 
     const { workArea } = screen.getPrimaryDisplay();
@@ -119,7 +145,7 @@ ipcMain.handle("show-error-alert", async (_event, data) => {
 // Evento para mostrar las alertas de tipo success
 ipcMain.handle("show-success-alert", async (_event, data) => {
     const toastWidth = 400;
-    const toastHeight = 80;
+    const toastHeight = 100;
     const margin = 20;
 
     const { workArea } = screen.getPrimaryDisplay();
@@ -158,6 +184,56 @@ ipcMain.handle("show-success-alert", async (_event, data) => {
     });
 });
 
+
+// Evento para mostrar la modal de credenciales
+ipcMain.handle("show-loading-window", async (event, show) => {
+    const toastWidth = 100;
+    const toastHeight = 100;
+    const margin = 20;
+
+    if (show) {
+        // Si ya existe, no la volvemos a crear
+        if (loadingWindow && !loadingWindow.isDestroyed()) return;
+
+        const { workArea } = screen.getPrimaryDisplay();
+
+        const x = Math.round(workArea.x + (workArea.width - toastWidth) / 2);
+        const y = Math.round(toastHeight + margin);
+
+        loadingWindow = new BrowserWindow({
+            width: toastWidth,
+            height: toastHeight,
+            x: x,
+            y: y,
+            frame: false,
+            transparent: true,
+            alwaysOnTop: true,
+            skipTaskbar: true,
+            resizable: false,
+            focusable: false,
+            webPreferences: {
+                preload: path.join(__dirname, "preload.mjs"),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: false,
+                sandbox: false
+            }
+        });
+
+        loadingWindow.setIgnoreMouseEvents(true, { forward: true });
+
+        await loadingWindow.loadFile(path.join(__dirname, 'views', 'alert', 'loadingWindow.html'));
+        loadingWindow.show();
+    } else {
+        // Cerrar si existe
+        if (loadingWindow && !loadingWindow.isDestroyed()) {
+            loadingWindow.close();
+            loadingWindow = null;
+        }
+    }
+});
+
+
 // Evento para mostrar la modal de credenciales
 ipcMain.handle("show-credential-modal", async (event, show, data) => {
     mainWindow.webContents.send('show-overlay');
@@ -184,7 +260,6 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
                 sandbox: false
             }
         });
-        credentialModal.webContents.openDevTools();
         // Carga el HTML de la modal y espera
         await credentialModal.webContents.loadFile(path.join(__dirname, "views", "actions", "credential.html"));
 
@@ -205,6 +280,16 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
+
+    if (!mainWindow.webContents.getURL().endsWith("index.html")) {
+        await new Promise(resolve => {
+            const handler = () => {
+                mainWindow.webContents.removeListener('did-finish-load', handler);
+                resolve();
+            };
+            mainWindow.webContents.on('did-finish-load', handler);
+        });
+    }
 
     if (isWindowAlive(credentialModal)) {
         credentialModal.hide();
@@ -242,6 +327,9 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
             case "folder":
                 utilityFile = "folder.html";
                 break;
+            case "welcome":
+                utilityFile = "welcome.html";
+                break;
             default:
                 return;
         }
@@ -251,7 +339,6 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
         utilitiesModal.show();
         utilitiesModal.moveTop();
         utilitiesModal.focus();
-        utilitiesModal.webContents.openDevTools({ mode: "undocked" });
     } else {
         if (isWindowAlive(utilitiesModal)) {
             utilitiesModal.hide();
@@ -283,7 +370,7 @@ app.whenReady().then(() => {
 // Evento para cerrar la aplicación correctamente
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-        deleteMasterPassowrd();
+        deleteMasterPassword();
         app.quit();
     }
 });
@@ -364,55 +451,141 @@ ipcMain.handle("obtain-credentials", async (event) => {
 
 ipcMain.handle("export-credentials", async (event, credentialList) => {
     console.log("Se ha solicitado la exportación de las credenciales");
-    utilitiesModal.webContents.send("export-credentials",credentialList);
+    utilitiesModal.webContents.send("export-credentials", credentialList);
 });
 
-// Evento para refrescar las credenciales
-ipcMain.on("refresh-vault", (event) => {
+/**
+ * Reenvía el evento 'refresh-vault' al proceso de renderizado principal.
+ * @memberof module:main
+ * @param {Electron.IpcMainEvent} event - Evento IPC recibido.
+ */
+function handleRefreshVault(event) {
     mainWindow.webContents.send("refresh-vault");
-});
+}
 
-ipcMain.handle("save-folder", (event, data) => {
+ipcMain.on("refresh-vault", handleRefreshVault);
+
+/**
+ * Envía los datos de la carpeta al proceso de renderizado.
+ * @memberof module:main
+ * @param {Electron.IpcMainInvokeEvent} event - Evento IPC.
+ * @param {String} data - Nombre de la carpeta a guardar.
+ */
+function handleSaveFolder(event, data) {
     mainWindow.webContents.send("save-folder", data);
-});
+}
 
-ipcMain.handle("send-folders", (event, data) => {
-    credentialModal.webContents.once('did-finish-load', () => {
+ipcMain.handle("save-folder", handleSaveFolder);
+
+/**
+ * Envía los datos de las carpetas al modal de credenciales una vez que se carga.
+ * @memberof module:main
+ * @param {Electron.IpcMainInvokeEvent} event - Evento IPC.
+ * @param {List} data - Nombres de las carpetas.
+ */
+function handleSendFolders(event, data) {
+    credentialModal.webContents.once("did-finish-load", () => {
         credentialModal.webContents.send("send-folders", data);
     });
-});
+}
 
-ipcMain.on("generate-password-to-credential", (event) => {
-    utilitiesModal.webContents.on('did-finish-load', () => {
+ipcMain.handle("send-folders", handleSendFolders);
+
+/**
+ * Solicita al modal de utilidades que genere una contraseña, una vez cargado.
+ * @memberof module:main
+ * @param {Electron.IpcMainEvent} event - Evento IPC.
+ */
+function handleGeneratePasswordToCredential(event) {
+    utilitiesModal.webContents.once("did-finish-load", () => {
         utilitiesModal.webContents.send("generate-password-to-credential");
     });
-});
+}
 
-ipcMain.on("generated-password", (event, data) => {
-    credentialModal.webContents.send("generated-password", data)
-});
+ipcMain.on("generate-password-to-credential", handleGeneratePasswordToCredential);
 
-ipcMain.handle("store-master-key", async (event, email, masterPassword) => {
+/**
+ * Reenvía la contraseña generada al modal de credenciales.
+ * @memberof module:main
+ * @param {Electron.IpcMainEvent} event - Evento IPC.
+ * @param {String} data - Contraseña generada.
+ */
+function handleGeneratedPassword(event, data) {
+    credentialModal.webContents.send("generated-password", data);
+}
+
+ipcMain.on("generated-password", handleGeneratedPassword);
+
+/**
+ * Almacena la clave maestra de un usuario.
+ * @memberof module:main
+ * @async
+ * @param {Electron.IpcMainInvokeEvent} event - Evento IPC.
+ * @param {string} email - Correo del usuario.
+ * @param {string} masterPassword - Clave maestra a almacenar.
+ * @returns {Promise<void>}
+ */
+async function handleStoreMasterKey(event, email, masterPassword) {
     await storeMasterPassword(email, masterPassword);
-});
+}
+
+ipcMain.handle("store-master-key", handleStoreMasterKey);
 
 ipcMain.handle("store-auth-key", async (event, email, authKey) => {
     await storeAuthKey(email, authKey);
-    await new Promise(resolve => setTimeout(resolve, 500)); //Will look into this
+    await new Promise(resolve => setTimeout(resolve, 500));
 });
 
-ipcMain.handle("get-master-key", async (event) => {
+/**
+ * Handler del canal "get-master-key".
+ * Devuelve la master key almacenada de forma segura.
+ * @memberof module:main
+ * @async
+ * @param {Electron.IpcMainInvokeEvent} event - El evento de IPC.
+ * @returns {Promise<string>} La clave maestra.
+ */
+async function handleGetMasterKey(event) {
     return await getMasterPassword();
-});
+}
 
-ipcMain.handle("get-auth-key", async (event) => {
+ipcMain.handle("get-master-key", handleGetMasterKey);
+
+
+/**
+ * Handler del canal "get-auth-key".
+ * Devuelve la master key almacenada de forma segura.
+ * @memberof module:main
+ * @async
+ * @param {Electron.IpcMainInvokeEvent} event - El evento de IPC.
+ * @returns {Promise<string>} La clave de autenticación.
+ */
+async function handleGetAuthKey(event) {
     return await getAuthKey();
-});
+}
 
-ipcMain.handle("get-email", async (event) => {
+ipcMain.handle("get-auth-key", handleGetAuthKey);
+
+
+
+/**
+ * Handler del canal "get-email".
+ * Devuelve el email del usuario.
+ * @memberof module:main
+ * @param {Electron.IpcMainInvokeEvent} event - El evento de IPC.
+ * @returns {Promise<string>} El email.
+ */
+async function handleGetEmail(event) {
     return getEmail();
-});
+}
 
+ipcMain.handle("get-email", handleGetEmail);
+
+/**
+ * Almacena la contraseña maestra del usuario en keytar.
+ * @memberof module:main
+ * @param {email} email - El correo electrónico del usuario.
+ * @param {masterPassword} masterPassword - La contraseña maestra del usuario.
+ */
 async function storeMasterPassword(email, masterPassword) {
     store.set(SERVICE_EMAIL, email);
     console.log(email)
@@ -424,6 +597,13 @@ async function storeMasterPassword(email, masterPassword) {
     }
 }
 
+/**
+ * Almacena la clave de autenticación del usuario en keytar.
+ * @memberof module:main
+ * @async
+ * @param {email} email - El correo electrónico del usuario.
+ * @param {authKey} authKey - La clave de autenticación del usuario.
+ */
 async function storeAuthKey(email, authKey) {
     try {
         await keytar.setPassword(SERVICE_AUTH_KEY, email, authKey);
@@ -433,7 +613,11 @@ async function storeAuthKey(email, authKey) {
     }
 }
 
-function deleteMasterPassowrd() {
+/**
+ * Elimina la contraseña maestra y la clave de autenticación del usuario almacenados en keytar.
+ * @memberof module:main
+ */
+function deleteMasterPassword() {
     try {
         const email = store.get("userEmail");
         keytar.deletePassword(SERVICE_MASTER_KEY, email);
@@ -443,32 +627,47 @@ function deleteMasterPassowrd() {
     }
 }
 
+/**
+ * Retorna la contraseña maestra del usuario alamcenado en keytar.
+ * @memberof module:main
+ * @async
+ * @returns {string} Retorna la contraseña maestra del usuario.
+ */
 async function getMasterPassword() {
     try {
         const email = store.get(SERVICE_EMAIL);
         const storedPassword = await keytar.getPassword(SERVICE_MASTER_KEY, email);
-        console.log("Contraseña maestra recuperada:", storedPassword);
         return storedPassword;
     } catch (error) {
         console.error("Error al recuperar la contraseña maestra:", error);
     }
 }
 
+/**
+ * Retorna la clave de autenticación del usuario alamcenado en keytar.
+ * @memberof module:main
+ * @async
+ * @returns {string} Retorna la clave de autenticación  del usuario.
+ */
 async function getAuthKey() {
     try {
         const email = store.get(SERVICE_EMAIL);
         const storedPassword = await keytar.getPassword(SERVICE_AUTH_KEY, email);
-        console.log("AuthKey recuperado:", storedPassword);
         return storedPassword;
     } catch (error) {
         console.error("Error al recuperar el authKey:", error);
     }
 }
 
+/**
+ * Retorna el email almacenado del usuario.
+ * @memberof module:main
+ * @async
+ * @returns {string} Retorna el email del usuario.
+ */
 async function getEmail() {
     try {
         const email = store.get(SERVICE_EMAIL);
-        console.log("email " + email)
         return email;
     } catch (error) {
         console.error("Error al recuperar el email:", error);

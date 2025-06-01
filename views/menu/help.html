@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy" content="
+          default-src 'self';
+          style-src   'self' https://rsms.me;
+          font-src    'self' https://rsms.me;
+          connect-src 'self' http://localhost:8080;
+        ">
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-[#202120] p-4">
+    <main class="w-full rounded-none shadow-none p-8 text-gray-200">
+        <h1 class="text-3xl font-bold mb-6 text-orange-400">Guía de Usuario</h1>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo agregar una credencial</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Haz clic en el botón <span class="font-semibold text-orange-400">Agregar</span> en la parte superior izquierda.</li>
+                <li>Selecciona <span class="font-semibold">Credencial</span> en el menú desplegable.</li>
+                <li>Completa los campos requeridos (usuario, contraseña, URL, etc.).</li>
+                <li>Guarda la credencial.</li>
+            </ol>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo crear una carpeta</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Haz clic en el botón <span class="font-semibold text-orange-400">Agregar</span>.</li>
+                <li>Selecciona <span class="font-semibold">Carpeta</span> en el menú desplegable.</li>
+                <li>Asigna un nombre a la carpeta y guárdala.</li>
+            </ol>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo copiar usuario, contraseña o URL</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Ubica la credencial en la lista.</li>
+                <li>Haz clic en el botón de <span class="font-semibold">copiar</span> junto al dato que deseas copiar.</li>
+            </ol>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo editar o eliminar una credencial</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Haz clic en la credencial para expandirla.</li>
+                <li>Utiliza los botones <span class="font-semibold text-green-400">Editar</span> o <span class="font-semibold text-red-400">Eliminar</span> según lo que necesites.</li>
+            </ol>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo generar una contraseña segura</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Haz clic en el botón <span class="font-semibold">Generar contraseña</span> en el menú lateral.</li>
+                <li>Configura las opciones y copia la contraseña generada.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-orange-300">Cómo exportar o importar datos</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Haz clic en el botón <span class="font-semibold">Exportar/Importar</span> en el menú lateral.</li>
+                <li>Sigue las instrucciones del modal para exportar o importar tus datos.</li>
+            </ol>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["renderers", "main.js", "preload.mjs", "scripts"],
+    "exclude": ["node_modules", "userdata", "config"]
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "node_modules/jsdoc/templates/default"
+  }
+}

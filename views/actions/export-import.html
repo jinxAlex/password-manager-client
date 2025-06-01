@@ -13,32 +13,31 @@
     <link href="../css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="max-w-[800px] max-h-[600px]">
     <!-- Modal Form -->
-    <form
-        class="w-full max-w-[800px] h-full max-h-[650px] bg-[#202021] rounded-2xl shadow-xl overflow-auto flex flex-col p-6">
+    <form class="w-full bg-[#202021] rounded-2xl shadow-xl overflow-hidden flex flex-col p-4">
 
         <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <h2 id="header" class="text-2xl font-semibold text-gray-100">Gestión de credenciales</h2>
+        <div class="flex items-center justify-between mb-4">
+            <h2 id="header" class="text-xl font-semibold text-gray-100">Exportar/Importar credenciales</h2>
             <button type="button" id="close-modal"
-                class="p-2 rounded-full bg-gray-700 bg-opacity-60 hover:bg-gray-600 focus:outline-none focus:ring-accentOrange/50">
-                <img class="w-7 h-7 text-gray-200 transition duration-75 group-hover:text-white transform rotate-45"
+                class="p-1.5 rounded-full bg-gray-700 bg-opacity-60 hover:bg-gray-600 focus:outline-none focus:ring-accentOrange/50">
+                <img class="w-6 h-6 text-gray-200 transition duration-75 group-hover:text-white transform rotate-45"
                     src="../../resources/actions/add.webp">
             </button>
         </div>
 
         <!-- Action Options -->
-        <fieldset class="mb-6">
-            <legend class="text-lg font-medium text-gray-200 mb-4">Selecciona una acción</legend>
-            <ul class="col-span-2 grid w-full gap-6 md:grid-cols-2 items-stretch">
+        <fieldset class="mb-4">
+            <legend class="text-base font-medium text-gray-200 mb-3">Selecciona una acción</legend>
+            <ul class="grid w-full gap-4 md:grid-cols-2 items-stretch">
                 <li class="h-full">
                     <input type="radio" id="importOption" name="actionType" value="import" class="hidden peer" />
                     <label for="importOption"
-                        class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14]  peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
+                        class="inline-flex items-start justify-between w-full p-4 h-full border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14] peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
                         <div>
-                            <img src="../../resources/actions/import.webp" width="50" height="50">
-                            <div class="w-full text-lg font-semibold">Importar</div>
+                            <img src="../../resources/actions/import.webp" width="40" height="40">
+                            <div class="w-full text-base font-semibold">Importar</div>
                             <div class="w-full text-sm">Importa credenciales desde un JSON.</div>
                         </div>
                     </label>
@@ -47,27 +46,28 @@
                 <li class="h-full">
                     <input type="radio" id="exportOption" name="actionType" value="export" class="hidden peer" />
                     <label for="exportOption"
-                        class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14]  peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
+                        class="inline-flex items-start justify-between w-full p-4 h-full border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14] peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
                         <div>
-                            <img src="../../resources/actions/export.webp" width="50" height="50">
-                            <div class="w-full text-lg font-semibold">Exportar</div>
+                            <img src="../../resources/actions/export.webp" width="40" height="40">
+                            <div class="w-full text-base font-semibold">Exportar</div>
                             <div class="w-full text-sm">Exporta tus credenciales a un JSON.</div>
                         </div>
                     </label>
                 </li>
             </ul>
         </fieldset>
-        <fieldset class="mb-6">
-            <legend class="text-lg font-medium text-gray-200 mb-4">¿Borrar credenciales existentes?</legend>
-            <ul class="col-span-2 grid w-full gap-6 md:grid-cols-2 items-stretch">
+
+        <fieldset class="mb-4">
+            <legend class="text-base font-medium text-gray-200 mb-3">¿Borrar credenciales existentes?</legend>
+            <ul class="grid w-full gap-4 md:grid-cols-2 items-stretch">
                 <li class="h-full">
                     <input type="radio" id="yesOption" name="confirmationType" value="yes" class="hidden peer" />
                     <label for="yesOption"
-                        class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14]  peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
+                        class="inline-flex items-start justify-between w-full p-4 h-full border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14] peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
                         <div>
-                            <img src="../../resources/actions/delete.webp" width="50" height="50">
-                            <div class="w-full text-lg font-semibold">Borrar mis credenciales</div>
-                            <div class="w-full text-sm">Se borraran todas las credenciales de tu cuenta.</div>
+                            <img src="../../resources/actions/delete.webp" width="40" height="40">
+                            <div class="w-full text-base font-semibold">Borrar mis credenciales</div>
+                            <div class="w-full text-sm">Se borrarán todas las credenciales de tu cuenta.</div>
                         </div>
                     </label>
                 </li>
@@ -75,10 +75,11 @@
                 <li class="h-full">
                     <input type="radio" id="noOption" name="confirmationType" value="no" class="hidden peer" />
                     <label for="noOption"
-                        class="inline-flex items-start justify-between w-full p-5 h-full  border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14] peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
+                        class="inline-flex items-start justify-between w-full p-4 h-full border-2 rounded-lg cursor-pointer border-gray-700 peer-checked:border-orange-400 hover:text-gray-200 text-gray-400 bg-[#202021] hover:bg-[#2d1e14] peer-checked:text-gray-300 peer-checked:bg-[#2d1e14]">
                         <div>
-                            <div class="w-full text-lg font-semibold">Conservar mis credenciales</div>
-                            <div class="w-full text-sm">No se borraran las credenciales existentes de tu cuenta.</div>
+                            <img src="../../resources/actions/keep.webp" width="40" height="40">
+                            <div class="w-full text-base font-semibold">Conservar mis credenciales</div>
+                            <div class="w-full text-sm">No se borrarán las credenciales existentes de tu cuenta.</div>
                         </div>
                     </label>
                 </li>
@@ -86,9 +87,9 @@
         </fieldset>
 
         <!-- Footer -->
-        <div class="mt-auto pt-4 border-t border-gray-700">
+        <div class="mt-auto pt-3 border-t border-gray-700">
             <button id="executeAction" type="button"
-                class="w-full py-3 text-white bg-[#F97316] hover:bg-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-500 font-medium rounded-lg shadow-md transition-colors">
+                class="w-full py-2.5 text-white bg-[#F97316] hover:bg-[#EA580C] focus:ring-4 focus:outline-none focus:ring-orange-500 font-medium rounded-lg shadow-md transition-colors">
                 Ejecutar
             </button>
         </div>
@@ -96,5 +97,6 @@
 
     <script type="module" src="../../renderers/exportImportRenderer.js"></script>
 </body>
+
 
 </html>

@@ -18,25 +18,29 @@
     <div id="overlay" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center">
     </div>
     <div class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto bg-blue w-64  bg-[#272726]">
-        <h5 class="text-base font-semibold text-gray-400">Password Manager</h5>
+        <div class="text-start">
+            <h1 class="text-4xl font-extrabold">
+                <span class="text-black">Black</span><span class="text-orange-500">Vault</span>
+            </h1>
+        </div>
         <div class="py-4 overflow-y-auto">
             <ul class="space-y-2 font-medium">
                 <li>
                     <a href="./menu/vault.html" target="content"
-                        class="flex items-center p-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <img class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            src="../resources/safe-box-white.png">
+                        class="flex items-center p-4 rounded-lg text-white hover:bg-gray-700 group">
+                        <img width="40" height="40" class="text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            src="../resources/vault.webp">
 
                         <span class="ms-3">Caja fuerte</span>
                     </a>
                 </li>
                 <li>
                     <button type="button" id="btnHerramientas"
-                        class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        class="flex items-center w-full p-4 text-base transition duration-75 rounded-lg group text-white hover:bg-gray-700"
                         aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                        <img src="../resources/menu/tool.webp" class="w-8 h-8">
+                        <img width="40" height="40" src="../resources/menu/tool.webp" >
                         <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Herramientas</span>
-                        <svg id="svg" class="w-3 h-3 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        <svg id="svg" class="w-3 h-3 aria-hidden=" true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="m1 1 4 4 4-4" />
@@ -45,16 +49,16 @@
                     <ul id="dropdown" class="hidden py-2 space-y-2 pl-8">
                         <li>
                             <a href="#" id="generatePassword"
-                                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 text-white hover:bg-gray-700">
                                 <img src="../resources/actions/random.webp" class="w-5 h-5">
                                 <span class="ms-3">Generador</span>
                             </a>
                         </li>
                         <li>
                             <a href="#" id="export/import"
-                                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 text-white hover:bg-gray-700">
                                 <img src="../resources/menu/document.webp" class="w-5 h-5">
-                                Exportar/Importar
+                                <span class="ms-3">Exportar/Importar</span>
                             </a>
                         </li>
                     </ul>
@@ -64,9 +68,9 @@
         <div class="absolute bottom-4 left-0 w-full px-4">
             <ul class="space-y-50 font-medium">
                 <li>
-                    <a href="#" target="content"
-                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <img src="../resources/menu/help.webp" class="w-8 h-8" />
+                    <a href="./menu/help.html" target="content"
+                        class="flex items-center p-4 rounded-lg text-white hover:bg-gray-700 group">
+                        <img src="../resources/menu/help.webp" width="40" height="40"  />
                         <span class="ms-3">Ayuda</span>
                     </a>
                 </li>

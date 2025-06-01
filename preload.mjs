@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld("api", {
       callback();
     });
   },
+  showLoadingWindow: (data) => ipcRenderer.invoke("show-loading-window", data),
   //generatePasswordToCredential: () => ipcRenderer.send("generate-password-to-credential"),
   onGeneratePasswordToCredential: (callback) => {
     ipcRenderer.on("generate-password-to-credential", (event) => {

@@ -1,3 +1,9 @@
+/**
+ * @file loginRenderer.js
+ * @description Renderer para la ventana de inicio de sesión. Maneja la lógica de autenticación del usuario, incluyendo la validación de campos y la comunicación con el servidor.
+ * @requires config/config.js
+ */
+
 import { SERVER_USER_LOGIN } from '../config/config.js';
 
 const inputEmail = document.getElementById("inputEmail");
@@ -5,7 +11,7 @@ const inputPassword = document.getElementById("inputPassword");
 
 document.getElementById("btnLogin").addEventListener("click", async (event) => {
     event.preventDefault();
-
+    window.api.showLoadingWindow(true);
     let email = inputEmail.value.trim();
     let password = inputPassword.value.trim();
 
@@ -17,6 +23,7 @@ document.getElementById("btnLogin").addEventListener("click", async (event) => {
         } else {
             window.api.showErrorModal("El campo de contraseña no puede estar vacío.");
         }
+        window.api.showLoadingWindow(false);
         return;
     }
 
@@ -31,7 +38,6 @@ document.getElementById("btnLogin").addEventListener("click", async (event) => {
             },
             body: JSON.stringify({ email, password: authKey }),
         });
-
         const result = await response.text();
 
         if (result === "User not found") {
@@ -46,4 +52,5 @@ document.getElementById("btnLogin").addEventListener("click", async (event) => {
         console.error("Error al intentar iniciar sesión:", error);
         window.api.showErrorModal("No se pudo conectar con el servidor. Intentelo de nuevo más tarde");
     }
+    window.api.showLoadingWindow(false);
 });
