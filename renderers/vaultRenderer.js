@@ -88,6 +88,15 @@ async function processCredentials(encryptedList) {
     renderCredentials();
 }
 
+/**
+ * Crea un botón para una carpeta con un icono y un nombre.
+ * @param {string} label - El nombre de la carpeta que se mostrará en el botón.
+ * @param {string} iconSrc - La ruta del icono que se mostrará en el botón.
+ * @param {string} classes - Clases CSS para aplicar al botón.
+ * @returns {HTMLButtonElement} El botón generado con icono y texto.
+ * @memberof module:vaultRenderer
+ * 
+ */
 function createFolderButton(label, iconSrc, classes) {
     const btn = document.createElement('button');
     btn.className = classes;
@@ -105,6 +114,15 @@ function createFolderButton(label, iconSrc, classes) {
     return btn;
 }
 
+/**
+ * Se 
+ * @param {string} label - El nombre de la carpeta que se mostrará en el botón.
+ * @param {string} iconSrc - La ruta del icono que se mostrará en el botón.
+ * @param {string} classes - Clases CSS para aplicar al botón.
+ * @returns {HTMLButtonElement} El botón generado con icono y texto.
+ * @memberof module:vaultRenderer
+ * 
+ */
 function buildFolderButtons() {
     foldersContainer.innerHTML = "";
     const baseClasses = 'flex items-center space-x-4 p-2 hover:bg-gray-600 rounded-md bg-gray-700 text-gray-200';

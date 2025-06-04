@@ -1,3 +1,9 @@
+/**
+ * @file passwordRenderer.js
+ * @description Renderizador encargado de generar contraseñas aleatorias según el tipo y longitud seleccionada.
+ * @module passwordRenderer
+ */
+
 const options = [
     document.getElementById('basicOption'),
     document.getElementById('intermediateOption'),
@@ -9,27 +15,28 @@ let isRequired = false;
 const rangeInput = document.getElementById('labels-range-input');
 const outputInput = document.getElementById('inputPassword');
 const btnClose = document.getElementById('close-modal');
+const lengthLabel = document.getElementById('lengthLabel');
 
-// Asegura selección única y genera contraseña al cambiar
-options.forEach(option => {
-    option.addEventListener('change', () => {
-        generatePassword();
-    });
-});
-
-// Genera contraseña al cambiar la longitud
-rangeInput.addEventListener('input', generatePassword);
-
-// Función para obtener la opción seleccionada
+/**
+ * Devuelve el tipo de contraseña seleccionado.
+ * @memberof module:exportImportRenderer
+ * @returns {string|null} - El tipo de contraseña seleccionado ('basic', 'intermediate', 'advanced') o null si no hay ninguno seleccionado.
+ * 
+ */
 function getSelectedType() {
     const selected = Array.from(options).find(opt => opt.checked);
     return selected ? selected.value : null;
 }
 
-// Generador de contraseña aleatoria según tipo y longitud
+/**
+ * Genera una contraseña aleatoria basada en el tipo y longitud seleccionada, esta contraseña se muestra en el campo de entrada.
+ * @memberof module:exportImportRenderer
+ * 
+ */
 function generatePassword() {
     const type = getSelectedType();
     const length = parseInt(rangeInput.value, 10);
+    lengthLabel.textContent = length;
     if (!type) {
         outputInput.value = '';
         return;
@@ -66,21 +73,49 @@ function generatePassword() {
 options[0].checked = true;
 generatePassword();
 
-document.getElementById('acceptPassword').addEventListener('click', event => {
+/**
+ * Envia la contraseña generada a la modal de la credencial si esta ha sido solicitida, si no
+ * @memberof module:exportImportRenderer
+ * 
+ */
+function sendPassword() {
     let password = outputInput.value.trim();
     if(isRequired && password != ""){
-        console.log(password)
         window.api.sendMessage("generated-password", password);
     }
     window.api.showUtilitiesModal("password", false);
 
-});
 
-btnClose.addEventListener('click', () => {
+}
+
+
+/**
+ * Cierra el modal de generación de contraseñas
+ * @memberof module:exportImportRenderer
+ * 
+ */
+function closeModal() {
     window.api.showUtilitiesModal("password", false);
-});
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+    options.forEach(option => {
+        option.addEventListener('change', () => {
+            generatePassword();
+        });
+    });
+    rangeInput.addEventListener('input', generatePassword);
+
+    document.getElementById('acceptPassword').addEventListener('click', sendPassword);
+    btnClose.addEventListener('click', closeModal);
+});
 
 window.api.onGeneratePasswordToCredential(() => {
     isRequired = true;
 });
+
+
+
+
+
+

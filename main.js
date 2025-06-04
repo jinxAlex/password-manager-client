@@ -59,7 +59,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
 
     mainWindow.setMenu(null);
-
+    
     mainWindow.maximize();
 
     mainWindow.once("ready-to-show", () => {
@@ -87,6 +87,7 @@ function createWindow() {
             sandbox: false
         }
     });
+    mainWindow.webContents.openDevTools({ mode: "detach" });
 
 }
 
@@ -334,14 +335,16 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
                 return;
         }
         await utilitiesModal.loadFile(path.join(__dirname, "views", "actions", utilityFile));
-
+        utilitiesModal.webContents.openDevTools({ mode: "detach" });
         utilitiesModal.center();
         utilitiesModal.show();
         utilitiesModal.moveTop();
         utilitiesModal.focus();
     } else {
         if (isWindowAlive(utilitiesModal)) {
-            utilitiesModal.hide();
+            console.log("Cerrando modal de utilidades");
+            utilitiesModal.destroy();
+            utilitiesModal = null;
         }
 
         if (isWindowAlive(credentialModal)) {

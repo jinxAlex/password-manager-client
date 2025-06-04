@@ -105,7 +105,7 @@ buttonSend.addEventListener('click', async () => {
         const result = await response.text();
 
         if (!response.ok) {
-            console.error("Error al agregar la credencial:", result);
+            console.log("Error al agregar la credencial:", result);
             if (edit) {
                 window.api.showErrorModal("Ocurrio un problema al editar la credencial.");
             } else {
