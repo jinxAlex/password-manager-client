@@ -23,11 +23,16 @@ import { fileURLToPath } from "url";
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import fs from 'fs';
+import electronSquirrelStartup from 'electron-squirrel-startup';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const store = new Store();
+
+if (electronSquirrelStartup) process.exit(0);
+
+app.setAppUserModelId('blackvault.blackvault');
 
 // Variables para las modales y la ventana principal
 let mainWindow, credentialModal, utilitiesModal, loadingWindow;
@@ -87,7 +92,7 @@ function createWindow() {
             sandbox: false
         }
     });
-    mainWindow.webContents.openDevTools({ mode: "detach" });
+    //mainWindow.webContents.openDevTools({ mode: "detach" });
 
 }
 
@@ -282,16 +287,6 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
 
-    if (!mainWindow.webContents.getURL().endsWith("index.html")) {
-        await new Promise(resolve => {
-            const handler = () => {
-                mainWindow.webContents.removeListener('did-finish-load', handler);
-                resolve();
-            };
-            mainWindow.webContents.on('did-finish-load', handler);
-        });
-    }
-
     if (isWindowAlive(credentialModal)) {
         credentialModal.hide();
     } else {
@@ -335,14 +330,13 @@ ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
                 return;
         }
         await utilitiesModal.loadFile(path.join(__dirname, "views", "actions", utilityFile));
-        utilitiesModal.webContents.openDevTools({ mode: "detach" });
+        //utilitiesModal.webContents.openDevTools({ mode: "detach" });
         utilitiesModal.center();
         utilitiesModal.show();
         utilitiesModal.moveTop();
         utilitiesModal.focus();
     } else {
         if (isWindowAlive(utilitiesModal)) {
-            console.log("Cerrando modal de utilidades");
             utilitiesModal.destroy();
             utilitiesModal = null;
         }

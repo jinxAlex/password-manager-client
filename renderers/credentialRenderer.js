@@ -35,15 +35,26 @@ buttonClose.addEventListener('click', () => {
     window.api.showCredentialModal(false);
 });
 
-buttonSend.addEventListener('click', async () => {
-    let name = inputCredentialName.value.trim();
-    let username = inputUsername.value.trim();
-    let password = inputPassword.value.trim();
-    let url = inputUrl.value.trim();
-
+function validateInput(name, username, password, url) {
+    let isValid = true;
     if (!name || !username || !password) {
         window.api.showErrorModal("Los campos 'Nombre', 'Usuario' y 'Contraseña' son obligatorios.");
-        return;
+        isValid = false;
+    }
+
+    if (name.length < 3) {
+        window.api.showErrorModal("El nombre de la credencial debe tener al menos 3 caracteres.");
+        isValid = false;
+    }
+
+    if (username.length < 3) {
+        window.api.showErrorModal("El nombre de usuario debe tener al menos 3 caracteres.");
+        isValid = false;
+    }
+
+    if (password.length < 8) {
+        window.api.showErrorModal("La contraseña debe tener al menos 8 caracteres.");
+        isValid = false;
     }
 
     if (url != "") {
@@ -51,10 +62,20 @@ buttonSend.addEventListener('click', async () => {
             new URL(url);
         } catch (e) {
             window.api.showErrorModal("La URL proporcionada no es válida.");
-            return;
+            isValid = false;
         }
     }
 
+    return isValid;
+}
+
+buttonSend.addEventListener('click', async () => {
+    let name = inputCredentialName.value.trim();
+    let username = inputUsername.value.trim();
+    let password = inputPassword.value.trim();
+    let url = inputUrl.value.trim();
+
+    validateInput(name, username, password, url);
 
     const data = JSON.stringify({
         "entry_name": name,
