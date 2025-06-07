@@ -85,13 +85,10 @@ async function login(){
 
 }
 
-<<<<<<< HEAD
 /**
  * Asocia el evento click del botón de login para iniciar el proceso de autenticación.
  * @memberof module:loginRenderer
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 document.getElementById("btnLogin").addEventListener("click", async (event) => {
     event.preventDefault();
     login()

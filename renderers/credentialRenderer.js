@@ -1,12 +1,9 @@
-<<<<<<< HEAD
 /**
  * @file credentialRenderer.js
  * @description Renderizador para la ventana de agregar/editar credenciales en BlackVault. Maneja la lógica de UI y la comunicación con el backend para agregar, editar y validar credenciales.
  * @module credentialRenderer
  * @requires config/config.js
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 import { SERVER_ADD_CREDENTIAL, SERVER_EDIT_CREDENTIAL } from '../config/config.js';
 
 const inputCredentialName = document.getElementById("inputCredential");
@@ -26,14 +23,11 @@ const buttonEyeClosed = document.getElementById("eyeClosed");
 let edit = false;
 let editId;
 
-<<<<<<< HEAD
 
 /**
  * Alterna la visibilidad del campo de contraseña.
  * @memberof module:credentialRenderer
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 buttonToggleVisibility.addEventListener("click", async function () {
     const isPassword = inputPassword.type === "password";
     console.log(isPassword)
@@ -43,30 +37,23 @@ buttonToggleVisibility.addEventListener("click", async function () {
     buttonEyeOpen.classList.toggle("hidden", isPassword);
 });
 
-<<<<<<< HEAD
 /**
  * Abre la modal de generación de contraseñas y envía el evento correspondiente.
  * @memberof module:credentialRenderer
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 buttonGenerate.addEventListener("click", async function () {
     window.api.showUtilitiesModal("password", true);
     window.api.sendMessage("generate-password-to-credential");
 });
 
-<<<<<<< HEAD
 /**
  * Cierra la modal de credenciales.
  * @memberof module:credentialRenderer
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 buttonClose.addEventListener('click', () => {
     window.api.showCredentialModal(false);
 });
 
-<<<<<<< HEAD
 /**
  * Valida los campos de entrada de la credencial.
  * @memberof module:credentialRenderer
@@ -76,8 +63,6 @@ buttonClose.addEventListener('click', () => {
  * @param {string} url - URL asociada.
  * @returns {boolean} True si los campos son válidos, false en caso contrario.
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 function validateInput(name, username, password, url) {
     let isValid = true;
     if (!name || !username || !password) {
@@ -112,13 +97,10 @@ function validateInput(name, username, password, url) {
     return isValid;
 }
 
-<<<<<<< HEAD
 /**
  * Maneja el evento de envío del formulario para agregar o editar una credencial.
  * @memberof module:credentialRenderer
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 buttonSend.addEventListener('click', async () => {
     let name = inputCredentialName.value.trim();
     let username = inputUsername.value.trim();
@@ -203,14 +185,11 @@ buttonSend.addEventListener('click', async () => {
     window.api.showLoadingWindow(false);
 });
 
-<<<<<<< HEAD
 /**
  * Rellena el formulario con los datos de la credencial a editar.
  * @memberof module:credentialRenderer
  * @param {Object} data - Datos de la credencial y configuración de edición.
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 window.api.onDataSent(data => {
     if (data.edit == true) {
         edit = true;
@@ -226,38 +205,29 @@ window.api.onDataSent(data => {
     }
 });
 
-<<<<<<< HEAD
 /**
  * Inserta la contraseña generada en el campo correspondiente.
  * @memberof module:credentialRenderer
  * @param {string} password - Contraseña generada.
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 window.api.onGeneratedPassword((password) => {
     inputPassword.value = password;
 });
 
-<<<<<<< HEAD
 /**
  * Rellena el selector de carpetas con la lista proporcionada.
  * @memberof module:credentialRenderer
  * @param {Array<string>} foldersList - Lista de carpetas.
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 window.api.onSendFolders((foldersList) => {
     fillFolderSelection(foldersList);
 });
 
-<<<<<<< HEAD
 /**
  * Llena el selector de carpetas con las opciones proporcionadas.
  * @memberof module:credentialRenderer
  * @param {Array<string>} foldersList - Lista de carpetas.
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 function fillFolderSelection(foldersList) {
     for (const folder of foldersList) {
         const opt = document.createElement('option');
