@@ -19,7 +19,7 @@ const lengthLabel = document.getElementById('lengthLabel');
 
 /**
  * Devuelve el tipo de contraseña seleccionado.
- * @memberof module:exportImportRenderer
+ * @memberof module:passwordRenderer
  * @returns {string|null} - El tipo de contraseña seleccionado ('basic', 'intermediate', 'advanced') o null si no hay ninguno seleccionado.
  * 
  */
@@ -30,7 +30,7 @@ function getSelectedType() {
 
 /**
  * Genera una contraseña aleatoria basada en el tipo y longitud seleccionada, esta contraseña se muestra en el campo de entrada.
- * @memberof module:exportImportRenderer
+ * @memberof module:passwordRenderer
  * 
  */
 function generatePassword() {
@@ -75,7 +75,7 @@ generatePassword();
 
 /**
  * Envia la contraseña generada a la modal de la credencial si esta ha sido solicitida, si no
- * @memberof module:exportImportRenderer
+ * @memberof module:passwordRenderer
  * 
  */
 function sendPassword() {
@@ -91,7 +91,7 @@ function sendPassword() {
 
 /**
  * Cierra el modal de generación de contraseñas
- * @memberof module:exportImportRenderer
+ * @memberof module:passwordRenderer
  * 
  */
 function closeModal() {
