@@ -115,15 +115,7 @@ function createFolderButton(label, iconSrc, classes) {
 }
 
 /**
-<<<<<<< HEAD
  * Se encarga de construir los botones de las carpetas en la interfaz.
-=======
- * Se 
- * @param {string} label - El nombre de la carpeta que se mostrará en el botón.
- * @param {string} iconSrc - La ruta del icono que se mostrará en el botón.
- * @param {string} classes - Clases CSS para aplicar al botón.
- * @returns {HTMLButtonElement} El botón generado con icono y texto.
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
  * @memberof module:vaultRenderer
  * 
  */
@@ -151,14 +143,11 @@ function buildFolderButtons() {
     });
 }
 
-<<<<<<< HEAD
 /**
  * Función que renderiza las credenciales en la interfaz de usuario.
  * @memberof module:vaultRenderer
  * 
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 function renderCredentials() {
     credentialContainer.innerHTML = '';
     let idCounter = 0;
@@ -268,14 +257,11 @@ buttonContainer.addEventListener('mouseenter', () => {
 
 buttonContainer.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => dropdown.classList.add('hidden'), 100); });
 
-<<<<<<< HEAD
 /**
  * Función para mostrar la modal para agregar una credencial.
  * @memberof module:vaultRenderer
  * 
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 function addCredential() {
     dropdown.classList.add('hidden');
     window.parent.api.showCredentialModal(true, { edit: false });
@@ -286,14 +272,11 @@ document.getElementById('addCredential').addEventListener('click', () => {
     addCredential();
 });
 
-<<<<<<< HEAD
 /**
  * Función para mostrar la modal para agregar una carpeta.
  * @memberof module:vaultRenderer
  * 
  */
-=======
->>>>>>> 8ff2a7f5cff9dfa84f4f5fccbad592c6b663bfd2
 function addFolder() {
     dropdown.classList.add('hidden');
     window.parent.api.showUtilitiesModal('folder', true);
