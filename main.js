@@ -64,7 +64,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "views", "login.html"));
 
     mainWindow.setMenu(null);
-    
+
     mainWindow.maximize();
 
     mainWindow.once("ready-to-show", () => {
@@ -287,11 +287,22 @@ ipcMain.handle("show-credential-modal", async (event, show, data) => {
 // Evento para mostrar la modal de utilidades
 ipcMain.handle("show-utilities-modal", async (event, typeModal, show) => {
 
+    if (!mainWindow.webContents.getURL().endsWith("index.html") && typeModal == "welcome") {
+        await new Promise(resolve => {
+            const handler = () => {
+                mainWindow.webContents.removeListener('did-finish-load', handler);
+                resolve();
+            };
+            mainWindow.webContents.on('did-finish-load', handler);
+        });
+    }
+
     if (isWindowAlive(credentialModal)) {
         credentialModal.hide();
     } else {
         mainWindow.webContents.send('show-overlay');
     }
+
     if (show) {
         if (!isWindowAlive(utilitiesModal)) {
             utilitiesModal = new BrowserWindow({
@@ -361,6 +372,29 @@ app.whenReady().then(() => {
     ipcMain.handle("change-view", async (event, viewPath) => {
         const fullPath = path.join(__dirname, viewPath);
         await mainWindow.loadFile(fullPath);
+    });
+
+    mainWindow.on('minimize', () => {
+        if (loadingWindow && !loadingWindow.isDestroyed()) {
+            loadingWindow.close();
+            loadingWindow = null;
+        }
+    });
+
+    // cuando se oculte (por ejemplo, al usar hide())
+    mainWindow.on('hide', () => {
+        if (loadingWindow && !loadingWindow.isDestroyed()) {
+            loadingWindow.close();
+            loadingWindow = null;
+        }
+    });
+
+    // cuando se cierre la ventana principal
+    mainWindow.on('close', () => {
+        if (loadingWindow && !loadingWindow.isDestroyed()) {
+            loadingWindow.close();
+            loadingWindow = null;
+        }
     });
 });
 
