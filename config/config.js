@@ -18,7 +18,7 @@ export const TIMING = 2000;
 // ---- APP REQUIRED URLS ----
 
 // SERVER BASE URL
-const SERVER_URL = "https://blackvault-app-cpese4a6c4avhwaq.westeurope-01.azurewebsites.net";
+const SERVER_URL = "https://blackvault-app-cpese4a6c4avhwaq.francecentral-01.azurewebsites.net";
 
 // SERVER USER ACTIONS URL
 const SERVER_USER_ACTIONS_URL = SERVER_URL + "/user";

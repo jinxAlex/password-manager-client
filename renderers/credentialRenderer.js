@@ -30,11 +30,10 @@ let editId;
  */
 buttonToggleVisibility.addEventListener("click", async function () {
     const isPassword = inputPassword.type === "password";
-    console.log(isPassword)
     inputPassword.type = isPassword ? "text" : "password";
 
-    buttonEyeClosed.classList.toggle("hidden", !isPassword);
-    buttonEyeOpen.classList.toggle("hidden", isPassword);
+    buttonEyeClosed.classList.toggle("hidden", isPassword);
+    buttonEyeOpen.classList.toggle("hidden", !isPassword);
 });
 
 /**
