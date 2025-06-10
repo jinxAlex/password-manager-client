@@ -67,24 +67,25 @@ function validateInput(name, username, password, url) {
     if (!name || !username || !password) {
         window.api.showErrorModal("Los campos 'Nombre', 'Usuario' y 'Contraseña' son obligatorios.");
         isValid = false;
+
     }
 
-    if (name.length < 3) {
+    if (isValid === true && name.length < 3) {
         window.api.showErrorModal("El nombre de la credencial debe tener al menos 3 caracteres.");
         isValid = false;
     }
 
-    if (username.length < 3) {
+    if (isValid === true && username.length < 3) {
         window.api.showErrorModal("El nombre de usuario debe tener al menos 3 caracteres.");
         isValid = false;
     }
 
-    if (password.length < 8) {
+    if (isValid === true && password.length < 8) {
         window.api.showErrorModal("La contraseña debe tener al menos 8 caracteres.");
         isValid = false;
     }
 
-    if (url != "") {
+    if (isValid === true && url != "") {
         try {
             new URL(url);
         } catch (e) {
@@ -106,7 +107,9 @@ buttonSend.addEventListener('click', async () => {
     let password = inputPassword.value.trim();
     let url = inputUrl.value.trim();
 
-    validateInput(name, username, password, url);
+    if (!validateInput(name, username, password, url)) {
+        return;
+    }
 
     const data = JSON.stringify({
         "entry_name": name,

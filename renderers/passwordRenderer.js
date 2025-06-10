@@ -80,7 +80,7 @@ generatePassword();
  */
 function sendPassword() {
     let password = outputInput.value.trim();
-    if(isRequired && password != ""){
+    if (isRequired && password != "") {
         window.api.sendMessage("generated-password", password);
     }
     window.api.showUtilitiesModal("password", false);
@@ -105,7 +105,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     rangeInput.addEventListener('input', generatePassword);
-
+    document.getElementById('copyPassword').addEventListener('click',async () => {
+        try {
+            await navigator.clipboard.writeText(outputInput.value);
+            window.parent.api.showSuccessModal("Contraseña copiada correctamente.");
+        } catch (err) {
+            console.error('Error al copiar al portapapeles:', err);
+        }
+    });
     document.getElementById('acceptPassword').addEventListener('click', sendPassword);
     btnClose.addEventListener('click', closeModal);
 });
